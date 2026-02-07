@@ -2,124 +2,116 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>App Builder Panel</title>
+<title>Web App Builder</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body {
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body, html {
+  height: 100%;
   font-family: Arial, sans-serif;
-  background: #f2f2f2;
-  padding: 20px;
 }
 
-.container {
-  max-width: 600px;
-  margin: auto;
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
+.app {
+  display: flex;
+  height: 100vh;
 }
 
-h2 {
-  text-align: center;
+/* LEFT SIDE */
+.editor {
+  width: 50%;
+  background: #111;
+  color: white;
+  padding: 10px;
 }
 
-input[type="file"] {
+.editor h3 {
+  margin-bottom: 8px;
+}
+
+textarea {
   width: 100%;
-  margin: 10px 0;
+  height: 90%;
+  background: #1e1e1e;
+  color: #00ff99;
+  border: none;
+  padding: 10px;
+  font-family: monospace;
+  font-size: 14px;
 }
 
-button {
+/* RIGHT SIDE */
+.preview {
+  width: 50%;
+  background: #f2f2f2;
+  padding: 10px;
+}
+
+.preview h3 {
+  margin-bottom: 8px;
+}
+
+iframe {
+  width: 100%;
+  height: 90%;
+  border: 1px solid #ccc;
+  background: white;
+}
+
+/* BUTTON */
+.build-btn {
+  margin-top: 5px;
   padding: 8px 15px;
   background: #007bff;
   color: white;
   border: none;
-  border-radius: 5px;
   cursor: pointer;
-}
-
-button:hover {
-  background: #0056b3;
-}
-
-ul {
-  list-style: none;
-  padding: 0;
-}
-
-li {
-  background: #eee;
-  margin: 5px 0;
-  padding: 8px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.delete {
-  background: red;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
-  <h2>App Upload Panel</h2>
+<div class="app">
 
-  <input type="file" id="file">
-  <button onclick="uploadApp()">Upload App</button>
+  <!-- LEFT: CODE -->
+  <div class="editor">
+    <h3>App Code (HTML)</h3>
+    <textarea id="code">
+<!DOCTYPE html>
+<html>
+<body style="font-family:Arial;text-align:center">
+<h2>My First App</h2>
+<p>This is my app</p>
+<button onclick="alert('Hello App')">Click Me</button>
+</body>
+</html>
+    </textarea>
+    <button class="build-btn" onclick="buildApp()">Build App</button>
+  </div>
 
-  <h3>Uploaded Apps</h3>
-  <ul id="appList"></ul>
+  <!-- RIGHT: PREVIEW -->
+  <div class="preview">
+    <h3>Live App Preview</h3>
+    <iframe id="preview"></iframe>
+  </div>
+
 </div>
 
 <script>
-function uploadApp() {
-  const fileInput = document.getElementById("file");
-  if (!fileInput.files[0]) {
-    alert("Please select a file");
-    return;
-  }
-
-  const formData = new FormData();
-  formData.append("appfile", fileInput.files[0]);
-
-  fetch("/upload", {
-    method: "POST",
-    body: formData
-  })
-  .then(res => res.json())
-  .then(() => {
-    fileInput.value = "";
-    loadApps();
-  });
+function buildApp() {
+  const code = document.getElementById("code").value;
+  const iframe = document.getElementById("preview");
+  iframe.srcdoc = code;
 }
 
-function loadApps() {
-  fetch("/apps")
-    .then(res => res.json())
-    .then(data => {
-      const list = document.getElementById("appList");
-      list.innerHTML = "";
-
-      data.forEach(file => {
-        const li = document.createElement("li");
-        li.innerHTML = `
-          <span>${file}</span>
-          <button class="delete" onclick="deleteApp('${file}')">Delete</button>
-        `;
-        list.appendChild(li);
-      });
-    });
-}
-
-function deleteApp(name) {
-  fetch("/delete/" + name, {
-    method: "DELETE"
-  }).then(() => loadApps());
-}
-
-loadApps();
+// auto build on load
+buildApp();
 </script>
 
 </body>
