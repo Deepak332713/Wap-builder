@@ -3,165 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mega Earn Pro - Final</title>
+    <title>Mega Earn Pro - Modular</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #6c5ce7; --secondary: #a29bfe; --bg: #f8f9fa; --dark: #2d3436; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding-bottom: 80px; }
+        :root { --primary: #6c5ce7; --bg: #f8f9fa; }
+        body { font-family: sans-serif; background: var(--bg); margin: 0; padding-bottom: 80px; }
+        .banner img { width: 100%; height: 160px; object-fit: cover; }
+        .balance-card { background: var(--primary); color: white; margin: -30px 20px 20px; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
         
-        .banner img { width: 100%; height: 180px; object-fit: cover; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; }
-        
-        .balance-card { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; margin: -40px 20px 20px; padding: 20px; border-radius: 15px; box-shadow: 0 10px 20px rgba(108, 92, 231, 0.3); }
-        
-        .page-content { display: none; padding: 20px; animation: fadeIn 0.3s ease; }
-        .active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* यह वो जगह है जहाँ अलग-अलग फाइलों का कोड लोड होगा */
+        #content-area { padding: 20px; min-height: 300px; }
 
-        .task-card { background: white; margin-bottom: 12px; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .task-btn { background: var(--primary); color: white; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: bold; }
-
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px 0; box-shadow: 0 -2px 15px rgba(0,0,0,0.1); border-top-left-radius: 20px; border-top-right-radius: 20px; z-index: 1000; }
-        .nav-item { color: #b2bec3; font-size: 12px; cursor: pointer; text-align: center; }
-        .nav-item.active-nav { color: var(--primary); font-weight: bold; }
-        .nav-item i { font-size: 22px; display: block; margin-bottom: 3px; }
-
-        /* Withdraw Form Styles */
-        .withdraw-box { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .method-select { display: flex; gap: 10px; margin-bottom: 15px; }
-        .method-btn { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px; background: #f9f9f9; cursor: pointer; font-size: 13px; }
-        .method-btn.active-method { border-color: var(--primary); background: #f0edff; color: var(--primary); font-weight: bold; }
-        
-        input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; margin: 8px 0; box-sizing: border-box; }
-        .hidden-field { display: none; }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #ddd; }
+        .nav-item { color: #888; font-size: 12px; cursor: pointer; text-align: center; }
+        .nav-item.active { color: var(--primary); font-weight: bold; }
+        .nav-item i { font-size: 22px; display: block; }
     </style>
 </head>
 <body>
 
     <div class="banner">
-        <img src="images/logo.png" alt="Banner" onerror="this.src='https://img.freepik.com/free-vector/digital-money-transfer-technology-background_1017-17454.jpg'">
+        <img src="images/logo.png" alt="Banner" onerror="this.src='https://via.placeholder.com/450x180'">
     </div>
 
     <div class="balance-card">
-        <p style="margin: 0; font-size: 14px; opacity: 0.9;">कुल बैलेंस</p>
-        <h1 style="margin: 5px 0;">₹<span id="balance">500.00</span></h1>
-        <p style="margin: 0; font-size: 12px;">यूजर ID: #ME786</p>
+        <p style="margin:0;">कुल बैलेंस</p>
+        <h1 style="margin:5px 0;">₹<span id="main-balance">500.00</span></h1>
     </div>
 
-    <div id="home" class="page-content active">
-        <h3>🚀 डेली ऑफर्स</h3>
-        <div class="task-card">
-            <span>डेली बोनस</span>
-            <button class="task-btn" onclick="earn(5)">Claim ₹5</button>
-        </div>
-        <div class="task-card">
-            <span>मैजिक स्पिन</span>
-            <button class="task-btn" onclick="earn(10)">Spin</button>
-        </div>
-    </div>
-
-    <div id="tasks" class="page-content">
-        <h3>📂 टास्क फोल्डर</h3>
-        <div class="task-card">
-            <span>न्यू ऐप इंस्टॉल</span>
-            <button class="task-btn" onclick="earn(50)">+ ₹50</button>
-        </div>
-        <div class="task-card">
-            <span>सर्वे पूरा करें</span>
-            <button class="task-btn" onclick="earn(25)">+ ₹25</button>
-        </div>
-    </div>
-
-    <div id="refer" class="page-content">
-        <h3>👥 रेफर और कमाएं</h3>
-        <div style="border: 2px dashed var(--primary); padding: 25px; border-radius: 15px; background: #f0f3ff; text-align: center;">
-            <p>दोस्तों को बुलाएं और ₹100 पाएं!</p>
-            <h2 style="letter-spacing: 5px; color: var(--primary);">EARN100</h2>
-            <button class="task-btn" style="width: 100%;" onclick="alert('Link Copied!')">Invite Friends</button>
-        </div>
-    </div>
-
-    <div id="user" class="page-content">
-        <h3>👤 प्रोफाइल और विड्रॉ</h3>
-        
-        <div class="withdraw-box">
-            <h4>विड्रॉ मेथड चुनें:</h4>
-            <div class="method-select">
-                <button id="btn-upi" class="method-btn active-method" onclick="setMethod('upi')"><i class="fas fa-mobile-alt"></i> UPI</button>
-                <button id="btn-bank" class="method-btn" onclick="setMethod('bank')"><i class="fas fa-university"></i> Bank</button>
-            </div>
-
-            <input type="number" id="withdraw-amt" placeholder="अमाउंट (Min ₹100)">
-            
-            <div id="upi-fields">
-                <input type="text" id="upi-id" placeholder="UPI ID (e.g. name@apl)">
-            </div>
-
-            <div id="bank-fields" class="hidden-field">
-                <input type="text" id="bank-acc" placeholder="बैंक अकाउंट नंबर">
-                <input type="text" id="bank-ifsc" placeholder="IFSC कोड">
-                <input type="text" id="bank-holder" placeholder="खाता धारक का नाम">
-            </div>
-
-            <button class="task-btn" style="width: 100%; margin-top: 15px; background: #00b894;" onclick="processWithdraw()">विड्रॉ रिक्वेस्ट भेजें</button>
-        </div>
+    <div id="content-area">
+        <h3>लोड हो रहा है...</h3>
     </div>
 
     <div class="bottom-nav">
-        <div class="nav-item active-nav" onclick="showPage('home', this)"><i class="fas fa-home"></i>होम</div>
-        <div class="nav-item" onclick="showPage('tasks', this)"><i class="fas fa-tasks"></i>टास्क</div>
-        <div class="nav-item" onclick="showPage('refer', this)"><i class="fas fa-user-plus"></i>रेफर</div>
-        <div class="nav-item" onclick="showPage('user', this)"><i class="fas fa-wallet"></i>विड्रॉ</div>
+        <div class="nav-item active" onclick="loadPage('home.html', this)"><i class="fas fa-home"></i>होम</div>
+        <div class="nav-item" onclick="loadPage('tasks.html', this)"><i class="fas fa-tasks"></i>टास्क</div>
+        <div class="nav-item" onclick="loadPage('refer.html', this)"><i class="fas fa-user-plus"></i>रेफर</div>
+        <div class="nav-item" onclick="loadPage('withdraw.html', this)"><i class="fas fa-wallet"></i>विड्रॉ</div>
     </div>
 
     <script>
-        let balance = 500;
-        let currentMethod = 'upi';
+        // बैलेंस को सुरक्षित रखने के लिए
+        let balance = localStorage.getItem('userBalance') ? parseFloat(localStorage.getItem('userBalance')) : 500;
+        document.getElementById('main-balance').innerText = balance.toFixed(2);
 
-        function showPage(pageId, element) {
-            document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active-nav'));
-            element.classList.add('active-nav');
+        // पेज लोड करने वाला फंक्शन
+        async function loadPage(pageName, element) {
+            try {
+                const response = await fetch('pages/' + pageName);
+                const html = await response.text();
+                document.getElementById('content-area').innerHTML = html;
+
+                // बटन का कलर बदलना
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                if(element) element.classList.add('active');
+            } catch (err) {
+                document.getElementById('content-area').innerHTML = "फाइल नहीं मिली: pages/" + pageName;
+            }
         }
 
-        function setMethod(method) {
-            currentMethod = method;
-            document.getElementById('btn-upi').classList.toggle('active-method', method === 'upi');
-            document.getElementById('btn-bank').classList.toggle('active-method', method === 'bank');
-            
-            document.getElementById('upi-fields').classList.toggle('hidden-field', method !== 'upi');
-            document.getElementById('bank-fields').classList.toggle('hidden-field', method !== 'bank');
-        }
+        // पहली बार में होम पेज लोड करें
+        window.onload = () => loadPage('home.html');
 
-        function earn(amt) {
+        // पैसे जोड़ने का ग्लोबल फंक्शन
+        function addMoney(amt) {
             balance += amt;
-            document.getElementById('balance').innerText = balance.toFixed(2);
-            alert("सफलता! ₹" + amt + " आपके वॉलेट में जोड़े गए।");
-        }
-
-        function processWithdraw() {
-            let amt = parseFloat(document.getElementById('withdraw-amt').value);
-            
-            if (isNaN(amt) || amt < 100) {
-                alert("कृपया कम से कम ₹100 भरें।");
-                return;
-            }
-            if (amt > balance) {
-                alert("अपर्याप्त बैलेंस!");
-                return;
-            }
-
-            // वेरिफिकेशन (नकली)
-            if(currentMethod === 'upi' && !document.getElementById('upi-id').value) {
-                alert("कृपया UPI ID भरें।"); return;
-            }
-            if(currentMethod === 'bank' && !document.getElementById('bank-acc').value) {
-                alert("बैंक डिटेल्स अधूरी हैं।"); return;
-            }
-
-            balance -= amt;
-            document.getElementById('balance').innerText = balance.toFixed(2);
-            alert("विड्रॉ रिक्वेस्ट सबमिट हो गई! पैसा 24 घंटे में आपके " + currentMethod.toUpperCase() + " में आ जाएगा।");
+            localStorage.setItem('userBalance', balance);
+            document.getElementById('main-balance').innerText = balance.toFixed(2);
+            alert("₹" + amt + " जोड़े गए!");
         }
     </script>
 </body>
