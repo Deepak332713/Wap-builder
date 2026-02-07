@@ -2,116 +2,113 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Web App Builder</title>
+<title>Mini Lovable App Builder</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;font-family:Arial}
+
+.main{
+  display:flex;
+  height:100vh;
 }
 
-body, html {
-  height: 100%;
-  font-family: Arial, sans-serif;
+/* LEFT */
+.editor{
+  width:50%;
+  background:#0f172a;
+  color:white;
+  padding:10px;
+}
+.editor h2{
+  margin-bottom:8px;
+}
+textarea{
+  width:100%;
+  height:90%;
+  background:#020617;
+  color:#22c55e;
+  border:none;
+  padding:10px;
+  font-family:monospace;
+  font-size:14px;
+  border-radius:6px;
 }
 
-.app {
-  display: flex;
-  height: 100vh;
+/* RIGHT */
+.preview{
+  width:50%;
+  background:#e5e7eb;
+  padding:10px;
 }
-
-/* LEFT SIDE */
-.editor {
-  width: 50%;
-  background: #111;
-  color: white;
-  padding: 10px;
+.preview h2{
+  margin-bottom:8px;
 }
-
-.editor h3 {
-  margin-bottom: 8px;
+.phone{
+  width:100%;
+  height:90%;
+  background:black;
+  border-radius:20px;
+  padding:10px;
 }
-
-textarea {
-  width: 100%;
-  height: 90%;
-  background: #1e1e1e;
-  color: #00ff99;
-  border: none;
-  padding: 10px;
-  font-family: monospace;
-  font-size: 14px;
-}
-
-/* RIGHT SIDE */
-.preview {
-  width: 50%;
-  background: #f2f2f2;
-  padding: 10px;
-}
-
-.preview h3 {
-  margin-bottom: 8px;
-}
-
-iframe {
-  width: 100%;
-  height: 90%;
-  border: 1px solid #ccc;
-  background: white;
+iframe{
+  width:100%;
+  height:100%;
+  border:none;
+  background:white;
+  border-radius:15px;
 }
 
 /* BUTTON */
-.build-btn {
-  margin-top: 5px;
-  padding: 8px 15px;
-  background: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
+.build{
+  margin-top:6px;
+  padding:8px 14px;
+  background:#2563eb;
+  color:white;
+  border:none;
+  border-radius:5px;
+  cursor:pointer;
 }
 </style>
 </head>
 
 <body>
 
-<div class="app">
+<div class="main">
 
-  <!-- LEFT: CODE -->
+  <!-- CODE SIDE -->
   <div class="editor">
-    <h3>App Code (HTML)</h3>
+    <h2>✍️ Write App Code</h2>
     <textarea id="code">
 <!DOCTYPE html>
 <html>
 <body style="font-family:Arial;text-align:center">
 <h2>My First App</h2>
-<p>This is my app</p>
-<button onclick="alert('Hello App')">Click Me</button>
+<p>Welcome to my app</p>
+<button onclick="alert('App Working!')">Click Me</button>
 </body>
 </html>
     </textarea>
-    <button class="build-btn" onclick="buildApp()">Build App</button>
+    <button class="build" onclick="build()">Build App</button>
   </div>
 
-  <!-- RIGHT: PREVIEW -->
+  <!-- PREVIEW SIDE -->
   <div class="preview">
-    <h3>Live App Preview</h3>
-    <iframe id="preview"></iframe>
+    <h2>📱 App Preview</h2>
+    <div class="phone">
+      <iframe id="view"></iframe>
+    </div>
   </div>
 
 </div>
 
 <script>
-function buildApp() {
-  const code = document.getElementById("code").value;
-  const iframe = document.getElementById("preview");
-  iframe.srcdoc = code;
+function build(){
+  document.getElementById("view").srcdoc =
+  document.getElementById("code").value;
 }
-
-// auto build on load
-buildApp();
+build();
 </script>
 
 </body>
