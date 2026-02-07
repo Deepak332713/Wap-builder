@@ -1,92 +1,58 @@
-import tkinter as tk
-from tkinter import messagebox, ttk
-from PIL import Image, ImageTk  # इमेज के लिए
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mega Earning App</title>
+    <style>
+        body { font-family: Arial; background: #f4f4f4; text-align: center; margin: 0; }
+        .banner img { width: 100%; max-height: 200px; object-fit: cover; }
+        .user-box { background: white; margin: 20px; padding: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .task-btn { display: block; width: 80%; margin: 10px auto; padding: 15px; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer; }
+        .withdraw-section { background: #eee; padding: 20px; margin-top: 20px; }
+        input { padding: 10px; width: 60%; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
 
-class EarningApp:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("Earning App 2026")
-        self.root.geometry("450x700")
-        self.root.configure(bg="#f4f7f6")
+    <div class="banner">
+        <img src="images/logo.png" alt="App Banner" onerror="this.src='https://via.placeholder.com/450x180?text=Mega+Earn+App'">
+    </div>
 
-        # --- डेटाबेस ---
-        self.balance = 500.0
-        self.user_name = "Guest User"
+    <div class="user-box">
+        <h3>👤 यूजर: <span id="user-name">Guest</span></h3>
+        <h2 style="color: green;">बैलेंस: ₹<span id="balance">500</span></h2>
+    </div>
 
-        self.setup_ui()
+    <h3>डेली टास्क</h3>
+    <button class="task-btn" style="background: #3498db;" onclick="earn(20)">Watch Video (+₹20)</button>
+    <button class="task-btn" style="background: #9b59b6;" onclick="earn(10)">Daily Reward (+₹10)</button>
 
-    def setup_ui(self):
-        # 1. इमेज सेक्शन (Banner)
-        self.img_frame = tk.Frame(self.root, bg="#2c3e50")
-        self.img_frame.pack(fill="x")
-        
-        try:
-            # यहाँ अपनी फोटो का नाम बदलें (जैसे: logo.png)
-            load = Image.open("logo.png")
-            load = load.resize((450, 180))
-            render = ImageTk.PhotoImage(load)
-            img = tk.Label(self.img_frame, image=render, bg="#2c3e50")
-            img.image = render
-            img.pack()
-        except:
-            # अगर इमेज न मिले तो यह दिखेगा
-            tk.Label(self.img_frame, text="💰 MEGA EARN APP", font=("Arial", 25, "bold"), 
-                     fg="#f1c40f", bg="#2c3e50", pady=40).pack()
+    <div class="withdraw-section">
+        <h3>विड्रॉ (Withdraw)</h3>
+        <input type="number" id="withdraw-amt" placeholder="अमाउंट लिखें">
+        <button class="task-btn" style="background: #e74c3c;" onclick="withdraw()">REDEEM NOW</button>
+    </div>
 
-        # 2. यूजर सिस्टम (Profile)
-        self.user_box = tk.Frame(self.root, bg="white", relief="groove", bd=2)
-        self.user_box.pack(fill="x", padx=20, pady=15)
-        
-        tk.Label(self.user_box, text=f"👤 यूजर: {self.user_name}", font=("Arial", 11), bg="white").pack(padx=10, anchor="w")
-        self.bal_label = tk.Label(self.user_box, text=f"बैलेंस: ₹{self.balance}", 
-                                  font=("Arial", 15, "bold"), fg="#27ae60", bg="white")
-        self.bal_label.pack(padx=10, pady=5, anchor="w")
+    <script>
+        let balance = 500;
 
-        # 3. टास्क फोल्डर (Earn Money)
-        tk.Label(self.root, text="--- डेली टास्क (Tasks) ---", font=("Arial", 12, "bold"), bg="#f4f7f6").pack()
-        
-        tasks = [("Watch Video", 20, "#3498db"), ("Daily Reward", 10, "#9b59b6"), ("Solve Quiz", 30, "#1abc9c")]
-        
-        for name, price, color in tasks:
-            btn = tk.Button(self.root, text=f"{name} (+₹{price})", 
-                            command=lambda n=name, p=price: self.earn(n, p),
-                            bg=color, fg="white", font=("Arial", 12, "bold"), width=30, pady=10)
-            btn.pack(pady=5)
+        function earn(amt) {
+            balance += amt;
+            document.getElementById('balance').innerText = balance;
+            alert("बधाई! आपने ₹" + amt + " कमाए।");
+        }
 
-        # 4. विड्रॉ सिस्टम (Withdraw)
-        self.footer = tk.Frame(self.root, bg="#ecf0f1", pady=20)
-        self.footer.pack(fill="both", side="bottom")
-
-        tk.Label(self.footer, text="विड्रॉ (Withdrawal)", font=("Arial", 12, "bold"), bg="#ecf0f1").pack()
-        self.amt_entry = tk.Entry(self.footer, font=("Arial", 14), justify="center")
-        self.amt_entry.pack(pady=10)
-        self.amt_entry.insert(0, "100")
-
-        tk.Button(self.footer, text="REDEEM NOW", command=self.withdraw, 
-                  bg="#e74c3c", fg="white", font=("Arial", 12, "bold"), width=20).pack()
-
-    def earn(self, name, amount):
-        self.balance += amount
-        self.update_ui()
-        messagebox.showinfo("Success", f"'{name}' पूरा हुआ! ₹{amount} मिले।")
-
-    def withdraw(self):
-        try:
-            amt = float(self.amt_entry.get())
-            if amt <= self.balance and amt >= 100:
-                self.balance -= amt
-                self.update_ui()
-                messagebox.showinfo("Withdraw", f"₹{amt} का विड्रॉ रिक्वेस्ट सफल रहा!")
-            else:
-                messagebox.showerror("Error", "कम बैलेंस या गलत अमाउंट!")
-        except:
-            messagebox.showerror("Error", "नंबर सही लिखें")
-
-    def update_ui(self):
-        self.bal_label.config(text=f"बैलेंस: ₹{self.balance}")
-
-if __name__ == "__main__":
-    root = tk.Tk()
-    app = EarningApp(root)
-    root.mainloop()
-                
+        function withdraw() {
+            let amt = document.getElementById('withdraw-amt').value;
+            if (amt >= 100 && amt <= balance) {
+                balance -= amt;
+                document.getElementById('balance').innerText = balance;
+                alert("विड्रॉ सफल रहा!");
+            } else {
+                alert("बैलेंस कम है या अमाउंट गलत है!");
+            }
+        }
+    </script>
+</body>
+</html>
