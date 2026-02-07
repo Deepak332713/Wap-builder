@@ -6,14 +6,13 @@
     <title>AI Website Builder</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        [span_0](start_span)/*[span_0](end_span) Mobile View Fix */
+        [span_0](start_span)/*[span_0](end_span) Mobile View (100dvh) */
         body { 
             min-height: 100dvh; 
             display: flex; 
             flex-direction: column; 
             overflow: hidden; 
         }
-        .sidebar-height { height: calc(100dvh - 2rem); }
         #preview-frame { background: white; width: 100%; height: 100%; border: none; }
         pre { margin: 0; white-space: pre-wrap; word-break: break-all; }
     </style>
@@ -28,13 +27,12 @@
                 </button>
             </div>
             
-            <div id="project-list" class="flex-1 overflow-y-auto px-2 space-y-1">
-                </div>
+            <div id="project-list" class="flex-1 overflow-y-auto px-2 space-y-1"></div>
 
             <div class="p-4 border-t border-zinc-800">
                 <button onclick="toggleSettings(true)" class="flex items-center gap-2 text-zinc-400 hover:text-white transition">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="Wait10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                     Settings
@@ -55,9 +53,7 @@
                         <button id="btn-preview" onclick="setView('preview')" class="px-3 py-1 rounded text-sm bg-zinc-700 text-white shadow-sm transition">Preview</button>
                         <button id="btn-code" onclick="setView('code')" class="px-3 py-1 rounded text-sm text-zinc-400 hover:text-white transition">Code</button>
                     </div>
-                    <button onclick="downloadCode()" class="bg-zinc-100 hover:bg-white text-zinc-900 px-3 py-1.5 rounded text-sm font-medium transition flex items-center gap-2">
-                        Download
-                    </button>
+                    <button onclick="downloadCode()" class="bg-zinc-100 hover:bg-white text-zinc-900 px-3 py-1.5 rounded text-sm font-medium transition flex items-center gap-2">Download</button>
                 </div>
             </header>
 
@@ -70,11 +66,9 @@
 
             <footer class="p-4 border-t border-zinc-800 bg-zinc-900 flex-shrink-0">
                 <div class="max-w-4xl mx-auto flex gap-2">
-                    <textarea id="user-input" rows="1" placeholder="Describe the website you want..." class="flex-1 bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none text-white"></textarea>
-                    <button id="send-btn" onclick="generateWeb()" class="bg-blue-600 hover:bg-blue-700 p-3 rounded-xl self-end transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                        </svg>
+                    <textarea id="user-input" rows="1" placeholder="Describe your website..." class="flex-1 bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 focus:outline-none text-white resize-none"></textarea>
+                    <button id="send-btn" onclick="generateWeb()" class="bg-blue-600 hover:bg-blue-700 p-3 rounded-xl transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                     </button>
                 </div>
             </footer>
@@ -82,47 +76,94 @@
     </div>
 
     <div id="settings-modal" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 hidden p-4">
-        <div class="bg-zinc-900 border border-zinc-800 p-6 rounded-2xl w-full max-w-md shadow-2xl">
-            <h2 class="text-xl font-bold mb-4">API Configuration</h2>
+        <div class="bg-zinc-900 border border-zinc-800 p-6 rounded-2xl w-full max-w-md">
+            <h2 class="text-xl font-bold mb-4">Settings</h2>
             <div class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-zinc-500 uppercase mb-1">API URL</label>
-                    <input id="api-url" type="text" class="w-full bg-zinc-800 border border-zinc-700 rounded p-2 text-sm" value="https://openrouter.ai/api/v1/chat/completions">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-zinc-500 uppercase mb-1">API Key</label>
-                    <input id="api-key" type="password" class="w-full bg-zinc-800 border border-zinc-700 rounded p-2 text-sm" placeholder="sk-...">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-zinc-500 uppercase mb-1">Model ID</label>
-                    <input id="model-id" type="text" class="w-full bg-zinc-800 border border-zinc-700 rounded p-2 text-sm" value="deepseek/deepseek-r1:free">
-                </div>
-                <div class="flex gap-2 pt-2">
-                    <button onclick="saveSettings()" class="flex-1 bg-blue-600 py-2 rounded font-medium">Save</button>
-                    <button onclick="toggleSettings(false)" class="flex-1 bg-zinc-800 py-2 rounded font-medium">Cancel</button>
-                </div>
+                <input id="api-url" type="text" class="w-full bg-zinc-800 border border-zinc-700 rounded p-2 text-sm" placeholder="API URL">
+                <input id="api-key" type="password" class="w-full bg-zinc-800 border border-zinc-700 rounded p-2 text-sm" placeholder="API Key">
+                <input id="model-id" type="text" class="w-full bg-zinc-800 border border-zinc-700 rounded p-2 text-sm" placeholder="Model ID">
+                <button onclick="saveSettings()" class="w-full bg-blue-600 py-2 rounded font-medium">Save Changes</button>
             </div>
         </div>
     </div>
 
     <script>
-        [span_1](start_span)//[span_1](end_span) System Logic & State
-        const SYSTEM_PROMPT = "You are a web developer. Output ONLY raw HTML code. Do not include markdown code blocks, explanations, or any text other than the HTML code itself.";
-        let projects = JSON.parse(localStorage.getItem('projects') || '[]');
+        // CRITICAL CONFIGURATION
+        const AUTO_API_KEY = "YOUR_OPENROUTER_API_KEY_HERE"; // <--- Yahan apni key daalein
+        [span_1](start_span)[span_2](start_span)const DEFAULT_URL = "https://openrouter.ai/api/v1/chat/completions";[span_1](end_span)[span_2](end_span)
+        [span_3](start_span)const DEFAULT_MODEL = "deepseek/deepseek-r1:free";[span_3](end_span)
+        [span_4](start_span)const SYSTEM_PROMPT = "You are a web developer. Output ONLY raw HTML code...";[span_4](end_span)
+
+        [span_5](start_span)let projects = JSON.parse(localStorage.getItem('projects') || '[]');[span_5](end_span)
         let currentCode = "";
 
-        // Initialization
         window.onload = () => {
-            document.getElementById('api-url').value = localStorage.getItem('apiUrl') || "https://openrouter.ai/api/v1/chat/completions";
-            document.getElementById('api-key').value = localStorage.getItem('apiKey') || "";
-            document.getElementById('model-id').value = localStorage.getItem('modelId') || "deepseek/deepseek-r1:free";
+            // Automatic Key Injection Logic
+            if (!localStorage.getItem('apiKey')) {
+                localStorage.setItem('apiKey', AUTO_API_KEY);
+            }
+            if (!localStorage.getItem('apiUrl')) {
+                localStorage.setItem('apiUrl', DEFAULT_URL);
+            }
+            if (!localStorage.getItem('modelId')) {
+                localStorage.setItem('modelId', DEFAULT_MODEL);
+            }
+
+            document.getElementById('api-url').value = localStorage.getItem('apiUrl');
+            document.getElementById('api-key').value = localStorage.getItem('apiKey');
+            document.getElementById('model-id').value = localStorage.getItem('modelId');
             renderProjects();
         };
 
-        function toggleSettings(show) {
-            document.getElementById('settings-modal').classList.toggle('hidden', !show);
+        async function generateWeb() {
+            const prompt = document.getElementById('user-input').value;
+            const apiKey = localStorage.getItem('apiKey');
+            const apiUrl = localStorage.getItem('apiUrl');
+            const modelId = localStorage.getItem('modelId');
+
+            if (!prompt) return;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ model: modelId, messages: [{ role: "system", content: SYSTEM_PROMPT }, { role: "user", content: prompt }] })
+                });
+
+                [span_6](start_span)const text = await response.text();[span_6](end_span)
+                if (!response.ok) { alert("API Error: " + text); return; [span_7](start_span)}
+
+                const data = JSON.parse(text);[span_7](end_span)
+                currentCode = data.choices[0].message.content.replace(/```html|```/g, '').trim();
+                updateUI(currentCode);
+                saveProject(prompt, currentCode);
+            } catch (err) { alert(err.message); }
         }
 
+        function updateUI(code) {
+            document.getElementById('preview-frame').srcdoc = code;
+            document.getElementById('code-display').textContent = code;
+        }
+
+        function saveProject(prompt, code) {
+            projects.unshift({ id: Date.now(), title: prompt.substring(0, 30), code: code });
+            [span_8](start_span)localStorage.setItem('projects', JSON.stringify(projects));[span_8](end_span)
+            renderProjects();
+        }
+
+        function renderProjects() {
+            document.getElementById('project-list').innerHTML = projects.map(p => `
+                <button onclick="loadProject(${p.id})" class="w-full text-left p-3 rounded-lg hover:bg-zinc-800 transition text-sm text-zinc-400 truncate">${p.title}</button>
+            `).join('');
+        }
+
+        function loadProject(id) {
+            const p = projects.find(proj => proj.id === id);
+            if (p) { currentCode = p.code; updateUI(currentCode); }
+        }
+
+        function toggleSettings(show) { document.getElementById('settings-modal').classList.toggle('hidden', !show); }
+        
         function saveSettings() {
             localStorage.setItem('apiUrl', document.getElementById('api-url').value);
             localStorage.setItem('apiKey', document.getElementById('api-key').value);
@@ -130,127 +171,19 @@
             toggleSettings(false);
         }
 
-        async function generateWeb() {
-            const prompt = document.getElementById('user-input').value;
-            const apiKey = localStorage.getItem('apiKey');
-            const apiUrl = localStorage.getItem('apiUrl') || "https://openrouter.ai/api/v1/chat/completions";
-            const modelId = localStorage.getItem('modelId') || "deepseek/deepseek-r1:free";
-
-            if (!apiKey) {
-                alert("Please set your API key in Settings.");
-                return toggleSettings(true);
-            }
-
-            if (!prompt) return;
-
-            const sendBtn = document.getElementById('send-btn');
-            sendBtn.disabled = true;
-            sendBtn.classList.add('opacity-50');
-
-            try {
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${apiKey}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        model: modelId,
-                        messages: [
-                            { role: "system", content: SYSTEM_PROMPT },
-                            { role: "user", content: prompt }
-                        ]
-                    })
-                });
-
-                [span_2](start_span)//[span_2](end_span) Anti-Crash Logic
-                const text = await response.text();
-                if (!response.ok) {
-                    alert("API Error: " + text);
-                    return;
-                }
-
-                const data = JSON.parse(text);
-                currentCode = data.choices[0].message.content.replace(/```html|```/g, '').trim();
-                
-                updateUI(currentCode);
-                saveProject(prompt, currentCode);
-
-            } catch (err) {
-                alert("Critical Error: " + err.message);
-            } finally {
-                sendBtn.disabled = false;
-                sendBtn.classList.remove('opacity-50');
-                document.getElementById('user-input').value = "";
-            }
-        }
-
-        function updateUI(code) {
-            const iframe = document.getElementById('preview-frame');
-            iframe.srcdoc = code;
-            document.getElementById('code-display').textContent = code;
-        }
-
-        function setView(view) {
-            const preview = document.getElementById('preview-frame');
-            const code = document.getElementById('code-view');
-            const btnP = document.getElementById('btn-preview');
-            const btnC = document.getElementById('btn-code');
-
-            if (view === 'preview') {
-                preview.classList.remove('hidden');
-                code.classList.add('hidden');
-                btnP.classList.add('bg-zinc-700', 'text-white');
-                btnC.classList.remove('bg-zinc-700', 'text-white');
-            } else {
-                preview.classList.add('hidden');
-                code.classList.remove('hidden');
-                btnC.classList.add('bg-zinc-700', 'text-white');
-                btnP.classList.remove('bg-zinc-700', 'text-white');
-            }
-        }
-
-        function saveProject(prompt, code) {
-            const project = { id: Date.now(), title: prompt.substring(0, 30), code: code };
-            projects.unshift(project);
-            localStorage.setItem('projects', JSON.stringify(projects));
-            renderProjects();
-        }
-
-        function renderProjects() {
-            const container = document.getElementById('project-list');
-            container.innerHTML = projects.map(p => `
-                <button onclick="loadProject(${p.id})" class="w-full text-left p-3 rounded-lg hover:bg-zinc-800 transition text-sm text-zinc-400 truncate">
-                    ${p.title}
-                </button>
-            `).join('');
-        }
-
-        function loadProject(id) {
-            const p = projects.find(proj => proj.id === id);
-            if (p) {
-                currentCode = p.code;
-                updateUI(currentCode);
-            }
-        }
-
-        function newProject() {
-            currentCode = "";
-            updateUI("");
-            document.getElementById('user-input').value = "";
-            setView('preview');
-        }
-
         function downloadCode() {
-            if (!currentCode) return alert("Nothing to download");
             const blob = new Blob([currentCode], { type: 'text/html' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = url;
-            a.download = 'index.html';
-            a.click();
+            a.href = url; a.download = 'index.html'; a.click();
+        }
+
+        function newProject() { currentCode = ""; updateUI(""); }
+        
+        function setView(view) {
+            document.getElementById('preview-frame').classList.toggle('hidden', view !== 'preview');
+            document.getElementById('code-view').classList.toggle('hidden', view !== 'code');
         }
     </script>
 </body>
-  </html>
-  
+</html>
