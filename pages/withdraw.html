@@ -1,4 +1,4 @@
-<div style="animation: fadeIn 0.4s ease-out; padding-bottom: 30px;">
+<div style="animation: fadeIn 0.4s ease-out; padding: 10px; padding-bottom: 30px;">
     <h3 style="color: #2d3436; text-align: center;"><i class="fas fa-wallet" style="color: #00b894;"></i> कैश आउट</h3>
 
     <div style="background: white; padding: 20px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
@@ -10,9 +10,11 @@
         </div>
 
         <div id="payment-inputs" style="margin-bottom: 20px;">
-            <input type="text" id="upi-id" placeholder="अपनी UPI ID लिखें" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; outline: none; display: block;">
+            <div id="upi-section">
+                <input type="text" id="upi-id" placeholder="अपनी UPI ID लिखें (e.g. name@upi)" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; outline: none;">
+            </div>
             
-            <div id="bank-form" style="display: none;">
+            <div id="bank-section" style="display: none;">
                 <input type="number" id="bank-acc" placeholder="बैंक अकाउंट नंबर" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; outline: none; margin-bottom: 10px;">
                 <input type="text" id="bank-ifsc" placeholder="IFSC कोड" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; outline: none; margin-bottom: 10px;">
                 <input type="text" id="bank-name" placeholder="खाता धारक का नाम" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; outline: none;">
@@ -30,110 +32,104 @@
 
     <div style="margin-top: 25px;">
         <h4 style="color: #2d3436; margin-bottom: 10px;"><i class="fas fa-history"></i> विड्रॉ हिस्ट्री</h4>
-        <div id="history-list" style="background: white; border-radius: 15px; padding: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
-            <p id="no-history" style="text-align: center; color: #888; font-size: 13px; padding: 10px;">अभी तक कोई विड्रॉ नहीं किया गया।</p>
-        </div>
+        <div id="history-list" style="background: white; border-radius: 15px; padding: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); min-height: 50px;">
+            </div>
     </div>
 </div>
 
 <script>
-    let currentMethod = "UPI";
+    var currentMethod = "UPI";
 
-    // बटन स्विच करने का सही तरीका
-    function switchMethod(m) {
-        currentMethod = m;
+    // बैंक और यूपीआई के बीच स्विच करने के लिए
+    function switchMethod(method) {
+        currentMethod = method;
         const upiBtn = document.getElementById('tab-upi');
         const bankBtn = document.getElementById('tab-bank');
-        const upiInput = document.getElementById('upi-id');
-        const bankForm = document.getElementById('bank-form');
+        const upiSec = document.getElementById('upi-section');
+        const bankSec = document.getElementById('bank-section');
 
-        if(m === 'UPI') {
-            upiBtn.style.background = "#e6fffb"; upiBtn.style.borderColor = "#00b894"; upiBtn.style.color = "#00b894";
-            bankBtn.style.background = "white"; bankBtn.style.borderColor = "#eee"; bankBtn.style.color = "#888";
-            upiInput.style.display = "block";
-            bankForm.style.display = "none";
+        if(method === 'UPI') {
+            upiBtn.style.cssText = "flex:1; padding: 12px; border-radius: 10px; border: 2px solid #00b894; background: #e6fffb; color: #00b894; font-weight: bold;";
+            bankBtn.style.cssText = "flex:1; padding: 12px; border-radius: 10px; border: 2px solid #eee; background: white; color: #888; font-weight: bold;";
+            upiSec.style.display = "block";
+            bankSec.style.display = "none";
         } else {
-            bankBtn.style.background = "#e6fffb"; bankBtn.style.borderColor = "#00b894"; bankBtn.style.color = "#00b894";
-            upiBtn.style.background = "white"; upiBtn.style.borderColor = "#eee"; upiBtn.style.color = "#888";
-            upiInput.style.display = "none";
-            bankForm.style.display = "block";
+            bankBtn.style.cssText = "flex:1; padding: 12px; border-radius: 10px; border: 2px solid #00b894; background: #e6fffb; color: #00b894; font-weight: bold;";
+            upiBtn.style.cssText = "flex:1; padding: 12px; border-radius: 10px; border: 2px solid #eee; background: white; color: #888; font-weight: bold;";
+            upiSec.style.display = "none";
+            bankSec.style.display = "block";
         }
     }
 
-    // विड्रॉ प्रोसेस फंक्शन
     function processWithdraw(amount) {
-        let userBalance = parseFloat(localStorage.getItem('userBalance')) || 0;
+        // लोकल स्टोरेज से बैलेंस लें
+        let balance = parseFloat(localStorage.getItem('userBalance')) || 0;
 
-        if (userBalance < amount) {
-            alert("बैलेंस कम है! और कमाई करें।");
+        if (balance < amount) {
+            alert("आपका बैलेंस कम है! कृपया और टास्क पूरे करें।");
             return;
         }
 
-        // वैलिडेशन
-        let paymentDetail = "";
+        // पेमेंट डिटेल्स की जाँच
         if (currentMethod === 'UPI') {
-            paymentDetail = document.getElementById('upi-id').value;
-            if (paymentDetail.length < 5) { alert("सही UPI ID डालें!"); return; }
+            let val = document.getElementById('upi-id').value;
+            if (val.length < 3) { alert("कृपया सही UPI ID डालें!"); return; }
         } else {
-            const acc = document.getElementById('bank-acc').value;
-            const ifsc = document.getElementById('bank-ifsc').value;
-            const name = document.getElementById('bank-name').value;
+            let acc = document.getElementById('bank-acc').value;
+            let ifsc = document.getElementById('bank-ifsc').value;
+            let name = document.getElementById('bank-name').value;
             if (!acc || !ifsc || !name) { alert("बैंक की पूरी जानकारी भरें!"); return; }
-            paymentDetail = "A/C: " + acc;
         }
 
         // पैसे काटना
-        let newBal = userBalance - amount;
-        localStorage.setItem('userBalance', newBal);
-        
-        // मुख्य बैलेंस अपडेट करना (अगर index.html में id='main-balance' है)
-        if(window.parent.document.getElementById('main-balance')){
-            window.parent.document.getElementById('main-balance').innerText = newBal.toFixed(2);
+        let newBalance = balance - amount;
+        localStorage.setItem('userBalance', newBalance);
+
+        // index.html के बैलेंस को अपडेट करना
+        if (window.parent.document.getElementById('main-balance')) {
+            window.parent.document.getElementById('main-balance').innerText = newBalance.toFixed(2);
         }
 
-        // हिस्ट्री में सेव करना
-        saveToHistory(amount, currentMethod);
-
-        alert(`₹${amount} का विड्रॉ सफल! 24 घंटे में क्रेडिट होगा।`);
-
-        // बटन गायब करना
-        if (amount === 50) document.getElementById('btn-50').style.display = 'none';
-        if (amount === 100) document.getElementById('btn-100').style.display = 'none';
-        
-        updateHistoryUI();
-    }
-
-    // हिस्ट्री सेव करने का फंक्शन
-    function saveToHistory(amt, method) {
+        // हिस्ट्री सेव करना
         let history = JSON.parse(localStorage.getItem('withdrawHistory')) || [];
-        let now = new Date();
-        let dateStr = now.toLocaleDateString() + " " + now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-        
-        history.unshift({ amount: amt, method: method, date: dateStr, status: "Pending" });
+        history.unshift({
+            amt: amount,
+            type: currentMethod,
+            time: new Date().toLocaleString(),
+            status: "Pending"
+        });
         localStorage.setItem('withdrawHistory', JSON.stringify(history));
+
+        alert("विड्रॉ सफल! ₹" + amount + " आपके खाते में भेज दिए जाएंगे।");
+
+        // बटन गायब करना (सिर्फ 50 और 100 वाले)
+        if(amount == 50) document.getElementById('btn-50').style.display = 'none';
+        if(amount == 100) document.getElementById('btn-100').style.display = 'none';
+
+        renderHistory();
     }
 
-    // हिस्ट्री दिखाने का फंक्शन
-    function updateHistoryUI() {
+    function renderHistory() {
         let history = JSON.parse(localStorage.getItem('withdrawHistory')) || [];
-        let listDiv = document.getElementById('history-list');
-        
-        if (history.length > 0) {
-            listDiv.innerHTML = "";
-            history.forEach(item => {
-                listDiv.innerHTML += `
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #f8f9fa;">
-                        <div>
-                            <b style="font-size: 14px;">₹${item.amount}</b> <small style="color: #888;">(${item.method})</small>
-                            <div style="font-size: 10px; color: #bbb;">${item.date}</div>
-                        </div>
-                        <span style="background: #fff4e5; color: #ff9800; padding: 3px 8px; border-radius: 5px; font-size: 11px; font-weight: bold;">${item.status}</span>
-                    </div>
-                `;
-            });
+        let list = document.getElementById('history-list');
+        if (history.length === 0) {
+            list.innerHTML = '<p style="text-align: center; color: #888; font-size: 13px; padding: 10px;">कोई हिस्ट्री नहीं है।</p>';
+            return;
         }
+        list.innerHTML = history.map(item => `
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #f9f9f9;">
+                <div>
+                    <b style="font-size: 14px; color: #2d3436;">₹${item.amt}</b> 
+                    <small style="color: #00b894; margin-left:5px;">${item.type}</small>
+                    <div style="font-size: 10px; color: #aaa; margin-top:2px;">${item.time}</div>
+                </div>
+                <div style="color: #ff9f43; font-size: 11px; font-weight: bold; background: #fff5ed; padding: 4px 8px; border-radius: 5px;">
+                    ${item.status}
+                </div>
+            </div>
+        `).join('');
     }
 
-    // पेज खुलते ही हिस्ट्री लोड करें
-    window.onload = updateHistoryUI;
+    // पेज लोड होते ही हिस्ट्री दिखाना
+    renderHistory();
 </script>
