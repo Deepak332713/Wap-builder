@@ -1,92 +1,96 @@
 import tkinter as tk
 from tkinter import messagebox, ttk
-from PIL import Image, ImageTk
 
 class EarningApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Mega Cash - Earning App")
-        self.root.geometry("400x650")
-        self.root.configure(bg="#f0f2f5")
+        self.root.title("Premium Earning App 2026")
+        self.root.geometry("450x700")
+        self.root.configure(bg="#f4f7f6")
 
-        # यूजर डेटा
-        self.user_name = "Rahul Kumar"
-        self.balance = 500.00  # शुरुआती बैलेंस (Coins/Rupees)
+        # --- डेटाबेस (Variable) ---
+        self.balance = 500.0  # शुरुआती बैलेंस
+        self.user_name = "Guest User"
+        self.total_tasks_done = 0
 
-        self.create_widgets()
+        self.setup_ui()
 
-    def create_widgets(self):
-        # --- 1. इमेज सेक्शन (Banner) ---
-        try:
-            # यहाँ अपनी इमेज फाइल का नाम दें, जैसे 'banner.png'
-            self.img = Image.open("banner.png") 
-            self.img = self.img.resize((380, 150))
-            self.banner_img = ImageTk.PhotoImage(self.img)
-            self.banner_label = tk.Label(self.root, image=self.banner_img, bg="#f0f2f5")
-            self.banner_label.pack(pady=10)
-        except:
-            self.banner_label = tk.Label(self.root, text="Earn Daily Rewards!", font=("Arial", 18, "bold"), 
-                                         bg="#4CAF50", fg="white", height=5, width=35)
-            self.banner_label.pack(pady=10)
-
-        # --- 2. यूजर सिस्टम (User Profile) ---
-        user_frame = tk.Frame(self.root, bg="white", bd=1, relief="groove")
-        user_frame.pack(fill="x", padx=20, pady=5)
+    def setup_ui(self):
+        # 1. इमेज/बैनर सेक्शन (बिना फाइल के काम करेगा)
+        self.header_frame = tk.Frame(self.root, bg="#2c3e50", height=150)
+        self.header_frame.pack(fill="x")
         
-        tk.Label(user_frame, text=f"👤 {self.user_name}", font=("Arial", 12, "bold"), bg="white").pack(side="left", padx=10, pady=10)
-        self.balance_label = tk.Label(user_frame, text=f"Balance: ₹{self.balance}", font=("Arial", 12), fg="green", bg="white")
-        self.balance_label.pack(side="right", padx=10)
+        self.logo_label = tk.Label(self.header_frame, text="💰\nMEGA CASH", font=("Arial", 28, "bold"), 
+                                   fg="#f1c40f", bg="#2c3e50")
+        self.logo_label.pack(pady=20)
 
-        # --- 3. टास्क फोल्डर (Tasks Section) ---
-        tk.Label(self.root, text="आज के टास्क (Daily Tasks)", font=("Arial", 14, "bold"), bg="#f0f2f5").pack(anchor="w", padx=20, pady=10)
+        # 2. यूजर प्रोफाइल सिस्टम
+        self.user_frame = tk.Frame(self.root, bg="white", relief="ridge", bd=2)
+        self.user_frame.pack(fill="x", padx=20, pady=10)
+
+        tk.Label(self.user_frame, text=f"👤 यूजर: {self.user_name}", font=("Arial", 12), bg="white").pack(anchor="w", padx=10, pady=5)
+        self.bal_display = tk.Label(self.user_frame, text=f"वॉलेट बैलेंस: ₹{self.balance}", 
+                                     font=("Arial", 14, "bold"), fg="#27ae60", bg="white")
+        self.bal_display.pack(anchor="w", padx=10, pady=5)
+
+        # 3. टास्क फोल्डर (Earn Money Section)
+        tk.Label(self.root, text="--- टास्क फोल्डर (Task Center) ---", font=("Arial", 12, "bold"), bg="#f4f7f6").pack(pady=10)
         
-        task_container = tk.Frame(self.root, bg="#f0f2f5")
-        task_container.pack(fill="both", padx=20)
+        task_list = [
+            ("Daily Login Bonus", 10, "#3498db"),
+            ("Watch Video Ad", 25, "#9b59b6"),
+            ("Spin the Wheel", 15, "#e67e22"),
+            ("Complete Survey", 50, "#1abc9c")
+        ]
 
-        tasks = [("Watch Video", 10), ("Daily Check-in", 5), ("Spin Wheel", 15)]
-        for task_name, reward in tasks:
-            btn = tk.Button(task_container, text=f"{task_name} (+₹{reward})", 
-                            command=lambda r=reward: self.complete_task(r),
-                            font=("Arial", 10), bg="white", relief="flat", pady=8)
-            btn.pack(fill="x", pady=3)
+        for task_name, reward, color in task_list:
+            btn = tk.Button(self.root, text=f"{task_name} (+₹{reward})", 
+                            command=lambda r=reward, n=task_name: self.complete_task(n, r),
+                            bg=color, fg="white", font=("Arial", 11, "bold"), 
+                            width=35, pady=8, cursor="hand2")
+            btn.pack(pady=5)
 
-        # --- 4. विड्रॉ सिस्टम (Withdraw Section) ---
-        tk.Label(self.root, text="विड्रॉ (Withdraw Money)", font=("Arial", 14, "bold"), bg="#f0f2f5").pack(anchor="w", padx=20, pady=15)
+        # 4. विड्रॉ सिस्टम (Withdrawal)
+        self.withdraw_frame = tk.Frame(self.root, bg="#ecf0f1", pady=20)
+        self.withdraw_frame.pack(fill="both", side="bottom")
+
+        tk.Label(self.withdraw_frame, text="पैसे निकालें (Withdraw)", font=("Arial", 12, "bold"), bg="#ecf0f1").pack()
         
-        self.amount_entry = tk.Entry(self.root, font=("Arial", 14), justify="center")
-        self.amount_entry.pack(fill="x", padx=40, pady=5)
-        self.amount_entry.insert(0, "Enter Amount")
+        self.withdraw_entry = tk.Entry(self.withdraw_frame, font=("Arial", 14), justify="center", width=15)
+        self.withdraw_entry.pack(pady=10)
+        self.withdraw_entry.insert(0, "100") # Default min value
 
-        withdraw_btn = tk.Button(self.root, text="Redeem to UPI / Wallet", command=self.withdraw_money,
-                                 bg="#FF5722", fg="white", font=("Arial", 12, "bold"), pady=10)
-        withdraw_btn.pack(fill="x", padx=40, pady=10)
+        withdraw_btn = tk.Button(self.withdraw_frame, text="Redeem via UPI", command=self.process_withdraw,
+                                 bg="#e74c3c", fg="white", font=("Arial", 12, "bold"), width=20)
+        withdraw_btn.pack()
 
-    # लॉजिक: टास्क पूरा करना
-    def complete_task(self, reward):
+    # --- फंक्शन लॉजिक ---
+    def complete_task(self, name, reward):
         self.balance += reward
-        self.update_ui()
-        messagebox.showinfo("Success", f"बधाई हो! आपने ₹{reward} जीत लिए हैं।")
+        self.total_tasks_done += 1
+        self.update_balance_ui()
+        messagebox.showinfo("बधाई हो!", f"आपने '{name}' पूरा किया और ₹{reward} कमाए!")
 
-    # लॉजिक: विड्रॉ करना
-    def withdraw_money(self):
+    def process_withdraw(self):
         try:
-            amt = float(self.amount_entry.get())
-            if amt <= self.balance and amt >= 100:
-                self.balance -= amt
-                self.update_ui()
-                messagebox.showinfo("Withdrawal", f"₹{amt} का विड्रॉ रिक्वेस्ट सफल रहा!")
-            elif amt < 100:
-                messagebox.showwarning("Error", "न्यूनतम विड्रॉ ₹100 है।")
+            amount = float(self.withdraw_entry.get())
+            if amount < 100:
+                messagebox.showwarning("लिमिट", "कम से कम ₹100 होना जरूरी है।")
+            elif amount > self.balance:
+                messagebox.showerror("बैलेंस कम है", "आपके वॉलेट में पर्याप्त बैलेंस नहीं है।")
             else:
-                messagebox.showerror("Error", "अपर्याप्त बैलेंस!")
+                self.balance -= amount
+                self.update_balance_ui()
+                messagebox.showinfo("सफल", f"₹{amount} का विड्रॉ रिक्वेस्ट लग गया है। 24 घंटे में पैसे मिल जाएंगे।")
         except ValueError:
-            messagebox.showerror("Error", "कृपया सही अंक भरें।")
+            messagebox.showerror("गलती", "कृपया सही अंक भरें।")
 
-    def update_ui(self):
-        self.balance_label.config(text=f"Balance: ₹{self.balance}")
+    def update_balance_ui(self):
+        self.bal_display.config(text=f"वॉलेट बैलेंस: ₹{self.balance}")
 
+# एप्लीकेशन रन करें
 if __name__ == "__main__":
     root = tk.Tk()
     app = EarningApp(root)
     root.mainloop()
-              
+                
