@@ -2,185 +2,209 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Website Builder</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI App & Web Builder PRO</title>
+    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
     <style>
-        [span_0](start_span)/*[span_0](end_span) Mobile View Fix */
+        /* Mobile View Fix (100dvh) */
         body { 
             min-height: 100dvh; 
             display: flex; 
             flex-direction: column; 
             overflow: hidden; 
+            margin: 0;
+            background-color: #09090b;
         }
-        .sidebar-height { height: calc(100dvh - 2rem); }
-        #preview-frame { background: white; width: 100%; height: 100%; border: none; }
-        pre { margin: 0; white-space: pre-wrap; word-break: break-all; }
+        #workspace { flex: 1; position: relative; background: #18181b; }
+        iframe { width: 100%; height: 100%; border: none; background: white; }
+        .loading-spinner {
+            border: 3px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+            border-top: 3px solid #3b82f6;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body class="bg-zinc-900 text-zinc-100 font-sans">
+<body class="text-zinc-100 font-sans">
 
     <div class="flex flex-1 overflow-hidden">
         <aside class="w-64 border-r border-zinc-800 flex flex-col bg-zinc-950 flex-shrink-0 hidden md:flex">
             <div class="p-4">
-                <button onclick="newProject()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition flex items-center justify-center gap-2">
+                <button onclick="newProject()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-blue-900/20">
                     <span>+</span> New Project
                 </button>
             </div>
-            
-            <div id="project-list" class="flex-1 overflow-y-auto px-2 space-y-1">
-                </div>
-
+            <div id="project-list" class="flex-1 overflow-y-auto px-2 space-y-1"></div>
             <div class="p-4 border-t border-zinc-800">
-                <button onclick="toggleSettings(true)" class="flex items-center gap-2 text-zinc-400 hover:text-white transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="Wait10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    Settings
+                <button onclick="toggleSettings(true)" class="flex items-center gap-2 text-zinc-400 hover:text-white transition w-full p-2 rounded-lg hover:bg-zinc-900">
+                    ⚙️ API Settings
                 </button>
             </div>
         </aside>
 
-        <main class="flex-1 flex flex-col relative overflow-hidden bg-zinc-900">
-            <header class="h-14 border-b border-zinc-800 flex items-center justify-between px-4 bg-zinc-900/50 backdrop-blur-md z-10">
-                <div class="flex gap-1.5">
-                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+        <main class="flex-1 flex flex-col relative overflow-hidden">
+            <header class="h-14 border-b border-zinc-800 flex items-center justify-between px-4 bg-zinc-950/50 backdrop-blur-xl z-20">
+                <div class="flex items-center gap-4">
+                    <span class="font-bold text-blue-500 tracking-tighter text-lg">AI BUILDER</span>
+                    <div class="flex gap-1">
+                        <div class="w-2.5 h-2.5 rounded-full bg-red-500/50"></div>
+                        <div class="w-2.5 h-2.5 rounded-full bg-yellow-500/50"></div>
+                        <div class="w-2.5 h-2.5 rounded-full bg-green-500/50"></div>
+                    </div>
                 </div>
 
                 <div class="flex items-center gap-2">
-                    <div class="bg-zinc-800 p-1 rounded-md flex">
-                        <button id="btn-preview" onclick="setView('preview')" class="px-3 py-1 rounded text-sm bg-zinc-700 text-white shadow-sm transition">Preview</button>
-                        <button id="btn-code" onclick="setView('code')" class="px-3 py-1 rounded text-sm text-zinc-400 hover:text-white transition">Code</button>
+                    <div class="bg-zinc-900 p-1 rounded-xl flex border border-zinc-800">
+                        <button id="btn-preview" onclick="setView('preview')" class="px-4 py-1.5 rounded-lg text-sm bg-blue-600 text-white shadow-lg transition">Preview</button>
+                        <button id="btn-code" onclick="setView('code')" class="px-4 py-1.5 rounded-lg text-sm text-zinc-400 hover:text-white transition">Code</button>
                     </div>
-                    <button onclick="downloadCode()" class="bg-zinc-100 hover:bg-white text-zinc-900 px-3 py-1.5 rounded text-sm font-medium transition flex items-center gap-2">
-                        Download
+                    <button onclick="downloadCode()" class="bg-white text-black px-4 py-1.5 rounded-lg text-sm font-bold hover:bg-zinc-200 transition">
+                        Export
                     </button>
                 </div>
             </header>
 
-            <div id="workspace" class="flex-1 overflow-auto bg-white">
-                <iframe id="preview-frame" src="about:blank"></iframe>
-                <div id="code-view" class="hidden p-4 font-mono text-sm text-zinc-300 bg-zinc-950 h-full overflow-auto">
-                    <pre id="code-display"></pre>
+            <div id="workspace">
+                <iframe id="preview-frame" name="preview" sandbox="allow-scripts allow-modals allow-forms"></iframe>
+                <div id="code-view" class="hidden p-6 font-mono text-sm text-blue-300 bg-zinc-950 h-full overflow-auto">
+                    <pre id="code-display" class="whitespace-pre-wrap break-all"></pre>
                 </div>
             </div>
 
-            <footer class="p-4 border-t border-zinc-800 bg-zinc-900 flex-shrink-0">
-                <div class="max-w-4xl mx-auto flex gap-2">
-                    <textarea id="user-input" rows="1" placeholder="Describe the website you want..." class="flex-1 bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none text-white"></textarea>
-                    <button id="send-btn" onclick="generateWeb()" class="bg-blue-600 hover:bg-blue-700 p-3 rounded-xl self-end transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                        </svg>
+            <footer class="p-4 border-t border-zinc-800 bg-zinc-950/80 backdrop-blur-md">
+                <div class="max-w-4xl mx-auto flex gap-3 items-end">
+                    <textarea id="user-input" rows="1" 
+                        placeholder="E.g. Build a professional Earning App with Wallet and Daily Tasks..." 
+                        class="flex-1 bg-zinc-900 border border-zinc-800 rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-white shadow-inner transition-all min-h-[56px]"></textarea>
+                    
+                    <button id="send-btn" onclick="generateWeb()" 
+                        class="bg-blue-600 hover:bg-blue-500 text-white p-4 rounded-2xl transition-all shadow-lg shadow-blue-600/20 active:scale-95 disabled:opacity-50">
+                        <div id="btn-content">
+                            <svg xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
+                        </div>
+                        <div id="btn-loading" class="hidden"><div class="loading-spinner"></div></div>
                     </button>
                 </div>
             </footer>
         </main>
     </div>
 
-    <div id="settings-modal" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 hidden p-4">
-        <div class="bg-zinc-900 border border-zinc-800 p-6 rounded-2xl w-full max-w-md shadow-2xl">
-            <h2 class="text-xl font-bold mb-4">API Configuration</h2>
-            <div class="space-y-4">
+    <div id="settings-modal" class="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-50 hidden p-4">
+        <div class="bg-zinc-900 border border-zinc-800 p-8 rounded-3xl w-full max-w-md shadow-2xl">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">⚙️ API Config</h2>
+            <div class="space-y-5">
                 <div>
-                    <label class="block text-xs font-bold text-zinc-500 uppercase mb-1">API URL</label>
-                    <input id="api-url" type="text" class="w-full bg-zinc-800 border border-zinc-700 rounded p-2 text-sm" value="https://openrouter.ai/api/v1/chat/completions">
+                    <label class="block text-xs font-black text-zinc-500 uppercase tracking-widest mb-2">Endpoint URL</label>
+                    <input id="api-url" type="text" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-sm focus:border-blue-500 outline-none" value="[https://openrouter.ai/api/v1/chat/completions](https://openrouter.ai/api/v1/chat/completions)">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-zinc-500 uppercase mb-1">API Key</label>
-                    <input id="api-key" type="password" class="w-full bg-zinc-800 border border-zinc-700 rounded p-2 text-sm" placeholder="sk-...">
+                    <label class="block text-xs font-black text-zinc-500 uppercase tracking-widest mb-2">OpenRouter API Key</label>
+                    <input id="api-key" type="password" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-sm focus:border-blue-500 outline-none" placeholder="sk-or-v1-...">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-zinc-500 uppercase mb-1">Model ID</label>
-                    <input id="model-id" type="text" class="w-full bg-zinc-800 border border-zinc-700 rounded p-2 text-sm" value="deepseek/deepseek-r1:free">
+                    <label class="block text-xs font-black text-zinc-500 uppercase tracking-widest mb-2">Model ID</label>
+                    <input id="model-id" type="text" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-sm focus:border-blue-500 outline-none" value="deepseek/deepseek-chat">
                 </div>
-                <div class="flex gap-2 pt-2">
-                    <button onclick="saveSettings()" class="flex-1 bg-blue-600 py-2 rounded font-medium">Save</button>
-                    <button onclick="toggleSettings(false)" class="flex-1 bg-zinc-800 py-2 rounded font-medium">Cancel</button>
+                <div class="flex gap-3 mt-4">
+                    <button onclick="saveSettings()" class="flex-1 bg-blue-600 py-3 rounded-xl font-bold hover:bg-blue-500 transition active:scale-95">Apply Settings</button>
+                    <button onclick="toggleSettings(false)" class="flex-1 bg-zinc-800 py-3 rounded-xl font-bold hover:bg-zinc-700 transition">Close</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        [span_1](start_span)//[span_1](end_span) System Logic & State
-        const SYSTEM_PROMPT = "You are a web developer. Output ONLY raw HTML code. Do not include markdown code blocks, explanations, or any text other than the HTML code itself.";
+        // System Config
+        const SYSTEM_PROMPT = `You are an expert mobile app and web developer. 
+        Output ONLY the complete, single-file HTML code. 
+        Include all CSS (Tailwind) and JS logic within the file. 
+        Use modern UI components, animations, and high-quality icons (Lucide or FontAwesome).
+        If asked for an Earning App, include Dashboard, Task List, Wallet, and Profile sections.
+        DO NOT explain anything. DO NOT use markdown code blocks. Start directly with <!DOCTYPE html>.`;
+
         let projects = JSON.parse(localStorage.getItem('projects') || '[]');
         let currentCode = "";
 
-        // Initialization
         window.onload = () => {
-            document.getElementById('api-url').value = localStorage.getItem('apiUrl') || "https://openrouter.ai/api/v1/chat/completions";
+            // Load saved settings or defaults
+            document.getElementById('api-url').value = localStorage.getItem('apiUrl') || "[https://openrouter.ai/api/v1/chat/completions](https://openrouter.ai/api/v1/chat/completions)";
             document.getElementById('api-key').value = localStorage.getItem('apiKey') || "";
-            document.getElementById('model-id').value = localStorage.getItem('modelId') || "deepseek/deepseek-r1:free";
+            document.getElementById('model-id').value = localStorage.getItem('modelId') || "deepseek/deepseek-chat";
             renderProjects();
         };
 
-        function toggleSettings(show) {
-            document.getElementById('settings-modal').classList.toggle('hidden', !show);
-        }
+        function toggleSettings(show) { document.getElementById('settings-modal').classList.toggle('hidden', !show); }
 
         function saveSettings() {
             localStorage.setItem('apiUrl', document.getElementById('api-url').value);
             localStorage.setItem('apiKey', document.getElementById('api-key').value);
             localStorage.setItem('modelId', document.getElementById('model-id').value);
             toggleSettings(false);
+            alert("Settings Saved!");
         }
 
         async function generateWeb() {
             const prompt = document.getElementById('user-input').value;
             const apiKey = localStorage.getItem('apiKey');
-            const apiUrl = localStorage.getItem('apiUrl') || "https://openrouter.ai/api/v1/chat/completions";
-            const modelId = localStorage.getItem('modelId') || "deepseek/deepseek-r1:free";
+            const apiUrl = localStorage.getItem('apiUrl');
+            const modelId = localStorage.getItem('modelId');
 
-            if (!apiKey) {
-                alert("Please set your API key in Settings.");
-                return toggleSettings(true);
-            }
-
+            if (!apiKey) { alert("First, add your API Key in Settings!"); return toggleSettings(true); }
             if (!prompt) return;
 
+            // UI State Loading
             const sendBtn = document.getElementById('send-btn');
+            const btnContent = document.getElementById('btn-content');
+            const btnLoading = document.getElementById('btn-loading');
+            
             sendBtn.disabled = true;
-            sendBtn.classList.add('opacity-50');
+            btnContent.classList.add('hidden');
+            btnLoading.classList.remove('hidden');
 
             try {
                 const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${apiKey}`,
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'HTTP-Referer': window.location.origin,
+                        'X-Title': 'AI App Builder'
                     },
                     body: JSON.stringify({
                         model: modelId,
                         messages: [
                             { role: "system", content: SYSTEM_PROMPT },
                             { role: "user", content: prompt }
-                        ]
+                        ],
+                        temperature: 0.7
                     })
                 });
 
-                [span_2](start_span)//[span_2](end_span) Anti-Crash Logic
                 const text = await response.text();
-                if (!response.ok) {
-                    alert("API Error: " + text);
-                    return;
-                }
+                if (!response.ok) throw new Error("API Error: " + text);
 
                 const data = JSON.parse(text);
-                currentCode = data.choices[0].message.content.replace(/```html|```/g, '').trim();
-                
+                let aiResponse = data.choices[0].message.content;
+
+                // CRITICAL: Clean AI junk like ```html or intro text
+                currentCode = aiResponse.replace(/```html|```|<!DOCTYPE html>/gi, '').trim();
+                currentCode = "<!DOCTYPE html>\n" + currentCode; // Ensure valid start
+
                 updateUI(currentCode);
                 saveProject(prompt, currentCode);
 
             } catch (err) {
-                alert("Critical Error: " + err.message);
+                console.error(err);
+                alert("Generation Failed: " + err.message);
             } finally {
                 sendBtn.disabled = false;
-                sendBtn.classList.remove('opacity-50');
+                btnContent.classList.remove('hidden');
+                btnLoading.classList.add('hidden');
                 document.getElementById('user-input').value = "";
             }
         }
@@ -192,46 +216,35 @@
         }
 
         function setView(view) {
-            const preview = document.getElementById('preview-frame');
-            const code = document.getElementById('code-view');
-            const btnP = document.getElementById('btn-preview');
-            const btnC = document.getElementById('btn-code');
-
-            if (view === 'preview') {
-                preview.classList.remove('hidden');
-                code.classList.add('hidden');
-                btnP.classList.add('bg-zinc-700', 'text-white');
-                btnC.classList.remove('bg-zinc-700', 'text-white');
-            } else {
-                preview.classList.add('hidden');
-                code.classList.remove('hidden');
-                btnC.classList.add('bg-zinc-700', 'text-white');
-                btnP.classList.remove('bg-zinc-700', 'text-white');
-            }
+            const isPreview = view === 'preview';
+            document.getElementById('preview-frame').classList.toggle('hidden', !isPreview);
+            document.getElementById('code-view').classList.toggle('hidden', isPreview);
+            
+            document.getElementById('btn-preview').classList.toggle('bg-blue-600', isPreview);
+            document.getElementById('btn-preview').classList.toggle('text-white', isPreview);
+            document.getElementById('btn-code').classList.toggle('bg-blue-600', !isPreview);
+            document.getElementById('btn-code').classList.toggle('text-white', !isPreview);
         }
 
         function saveProject(prompt, code) {
-            const project = { id: Date.now(), title: prompt.substring(0, 30), code: code };
+            const project = { id: Date.now(), title: prompt.substring(0, 35), code: code };
             projects.unshift(project);
-            localStorage.setItem('projects', JSON.stringify(projects));
+            localStorage.setItem('projects', JSON.stringify(projects.slice(0, 20))); // Save last 20
             renderProjects();
         }
 
         function renderProjects() {
             const container = document.getElementById('project-list');
             container.innerHTML = projects.map(p => `
-                <button onclick="loadProject(${p.id})" class="w-full text-left p-3 rounded-lg hover:bg-zinc-800 transition text-sm text-zinc-400 truncate">
-                    ${p.title}
+                <button onclick="loadProject(${p.id})" class="w-full text-left p-3 rounded-xl hover:bg-zinc-900 transition text-sm text-zinc-400 truncate flex items-center gap-2">
+                    <span>📁</span> ${p.title}
                 </button>
             `).join('');
         }
 
         function loadProject(id) {
             const p = projects.find(proj => proj.id === id);
-            if (p) {
-                currentCode = p.code;
-                updateUI(currentCode);
-            }
+            if (p) { currentCode = p.code; updateUI(currentCode); }
         }
 
         function newProject() {
@@ -242,12 +255,12 @@
         }
 
         function downloadCode() {
-            if (!currentCode) return alert("Nothing to download");
+            if (!currentCode) return alert("Nothing to export!");
             const blob = new Blob([currentCode], { type: 'text/html' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'index.html';
+            a.download = 'ai-app-build.html';
             a.click();
         }
     </script>
