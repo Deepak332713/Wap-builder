@@ -1,12 +1,66 @@
-// index.html के स्क्रिप्ट में ये सुधार करें:
-function updateBalanceDisplay(newBal) {
-    document.getElementById('main-balance').innerText = newBal.toFixed(2);
-}
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mega Earn Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { --primary: #6c5ce7; --bg: #f8f9fa; }
+        body { font-family: sans-serif; background: var(--bg); margin: 0; padding-bottom: 80px; }
+        .balance-card { background: var(--primary); color: white; margin: 20px; padding: 25px; border-radius: 20px; box-shadow: 0 8px 20px rgba(108, 92, 231, 0.3); }
+        #content-area { padding: 15px; min-height: 400px; }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #eee; z-index: 1000; }
+        .nav-item { color: #888; font-size: 11px; cursor: pointer; text-align: center; flex: 1; }
+        .nav-item.active { color: var(--primary); font-weight: bold; }
+        .nav-item i { font-size: 20px; display: block; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+    <div class="balance-card">
+        <p style="margin:0; opacity: 0.8;">कुल बैलेंस</p>
+        <h1 style="margin:5px 0;">₹<span id="main-balance">0.00</span></h1>
+    </div>
 
-function addMoney(amt) {
-    let currentBal = parseFloat(localStorage.getItem('userBalance')) || 500;
-    currentBal += amt;
-    localStorage.setItem('userBalance', currentBal);
-    updateBalanceDisplay(currentBal);
-    alert("₹" + amt + " जोड़े गए!");
-}
+    <div id="content-area"></div>
+
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="loadPage('home.html', this)"><i class="fas fa-home"></i>होम</div>
+        <div class="nav-item" onclick="loadPage('tasks.html', this)"><i class="fas fa-tasks"></i>टास्क</div>
+        <div class="nav-item" onclick="loadPage('refer.html', this)"><i class="fas fa-user-plus"></i>रेफर</div>
+        <div class="nav-item" onclick="loadPage('withdraw.html', this)"><i class="fas fa-wallet"></i>विड्रॉ</div>
+        <div class="nav-item" onclick="loadPage('user.html', this)"><i class="fas fa-user-circle"></i>यूजर</div>
+    </nav>
+
+    <script>
+        let balance = localStorage.getItem('userBalance') ? parseFloat(localStorage.getItem('userBalance')) : 500;
+        
+        function updateUI() {
+            document.getElementById('main-balance').innerText = balance.toFixed(2);
+        }
+
+        async function loadPage(pageName, element) {
+            try {
+                // यहाँ से 'pages/' हटा दिया गया है ताकि फाइलें लोड हों
+                const response = await fetch(pageName);
+                const html = await response.text();
+                document.getElementById('content-area').innerHTML = html;
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                if(element) element.classList.add('active');
+                if(pageName === 'withdraw.html') renderHistory();
+            } catch (err) {
+                document.getElementById('content-area').innerHTML = "फाइल लोड एरर!";
+            }
+        }
+
+        function addMoney(amt) {
+            balance += amt;
+            localStorage.setItem('userBalance', balance);
+            updateUI();
+            alert("₹" + amt + " प्राप्त हुए!");
+        }
+
+        window.onload = () => { updateUI(); loadPage('home.html'); };
+    </script>
+</body>
+</html>
