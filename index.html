@@ -6,12 +6,9 @@
     <title>Mega Earn Pro | Premium</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Modern Vibrant Background */
         :root {
             --primary: #6c5ce7;
-            --secondary: #a29bfe;
             --accent: #00cec9;
-            --glass: rgba(255, 255, 255, 0.9);
             --bg-gradient: linear-gradient(135deg, #6c5ce7 0%, #d63031 100%);
         }
 
@@ -24,13 +21,13 @@
             color: #2d3436;
         }
 
-        /* Top Header & Banner */
+        /* Top Header - अब यह छोटा और साफ है */
         .top-header {
             background: var(--bg-gradient);
-            height: 180px;
-            border-radius: 0 0 40px 40px;
+            height: 100px; /* ऊंचाई कम कर दी गई है */
+            border-radius: 0 0 30px 30px;
             position: relative;
-            box-shadow: 0 10px 30px rgba(108, 92, 231, 0.3);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
         }
 
         .header-content {
@@ -41,51 +38,18 @@
             align-items: center;
         }
 
-        /* Glass Balance Card */
-        .balance-card {
-            background: var(--glass);
-            backdrop-filter: blur(15px);
-            margin: -60px 20px 20px;
-            padding: 25px;
-            border-radius: 25px;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.3);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            animation: slideUp 0.6s ease-out;
-        }
-
-        .balance-label {
-            font-size: 14px;
-            color: #636e72;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 600;
-        }
-
-        .balance-amount {
-            font-size: 36px;
-            font-weight: 800;
-            color: var(--primary);
-            margin: 5px 0;
-        }
-
-        /* Content Area Animation */
         #content-area {
-            padding: 10px 20px;
+            padding: 20px;
             min-height: 400px;
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            animation: fadeIn 0.5s ease-in;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Premium Bottom Navigation */
+        /* Bottom Navigation */
         .bottom-nav {
             position: fixed;
             bottom: 15px;
@@ -106,7 +70,7 @@
             font-size: 11px;
             cursor: pointer;
             text-align: center;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.3s ease;
             flex: 1;
         }
 
@@ -118,15 +82,13 @@
 
         .nav-item.active {
             color: #fff;
-            transform: translateY(-8px);
+            transform: translateY(-5px);
         }
 
         .nav-item.active i {
             color: var(--accent);
-            text-shadow: 0 0 10px var(--accent);
         }
 
-        /* Loading Spinner */
         .loader {
             border: 4px solid #f3f3f3;
             border-top: 4px solid var(--primary);
@@ -136,9 +98,7 @@
             animation: spin 1s linear infinite;
             margin: 50px auto;
         }
-
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
     </style>
 </head>
 <body>
@@ -147,22 +107,9 @@
         <div class="header-content">
             <div>
                 <h2 style="margin:0; font-size: 18px;">Mega Earn <span style="color: var(--accent);">Pro</span></h2>
-                <p style="margin:0; font-size: 12px; opacity: 0.8;">वापस स्वागत है!</p>
+                <p style="margin:0; font-size: 12px; opacity: 0.8;">Premium Earning App</p>
             </div>
-            <i class="fas fa-bell" style="font-size: 20px;"></i>
-        </div>
-    </div>
-
-    <div class="balance-card">
-        <div class="balance-label">Available Balance</div>
-        <div class="balance-amount">₹<span id="main-balance">0.00</span></div>
-        <div style="display: flex; justify-content: center; gap: 15px; margin-top: 10px;">
-            <small style="background: #e1f5fe; color: #0288d1; padding: 4px 10px; border-radius: 20px; font-weight: bold;">
-                <i class="fas fa-shield-alt"></i> Secure
-            </small>
-            <small style="background: #f1f8e9; color: #388e3c; padding: 4px 10px; border-radius: 20px; font-weight: bold;">
-                <i class="fas fa-bolt"></i> Fast
-            </small>
+            <i class="fas fa-user-circle" style="font-size: 24px; opacity: 0.9;"></i>
         </div>
     </div>
 
@@ -179,57 +126,53 @@
     </nav>
 
     <script>
-        // Balance Logic with Animation
         let balance = localStorage.getItem('userBalance') ? parseFloat(localStorage.getItem('userBalance')) : 500.00;
-        
-        function updateMainBalance() {
-            const el = document.getElementById('main-balance');
-            el.innerText = balance.toFixed(2);
-        }
 
-        // Improved Page Loader
         async function loadPage(pageName, element) {
             const contentArea = document.getElementById('content-area');
             contentArea.innerHTML = '<div class="loader"></div>';
             
             try {
                 const response = await fetch(pageName);
-                if (!response.ok) throw new Error('File not found');
+                if (!response.ok) throw new Error('Error');
                 const html = await response.text();
                 
-                contentArea.style.animation = 'none';
-                contentArea.offsetHeight; // trigger reflow
-                contentArea.style.animation = 'fadeIn 0.5s ease-in';
                 contentArea.innerHTML = html;
 
-                // Nav highlight logic
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
                 if(element) element.classList.add('active');
                 
-                // Specific page triggers
-                if(pageName === 'withdraw.html' && typeof renderHistory === 'function') renderHistory();
+                // अगर विड्रॉ पेज है, तो वहाँ बैलेंस दिखाने वाला फंक्शन चलाएं
+                if(pageName === 'withdraw.html') {
+                    if(typeof renderWithdrawBalance === 'function') {
+                        renderWithdrawBalance();
+                    }
+                    if(typeof renderHistory === 'function') renderHistory();
+                }
             } catch (err) {
-                contentArea.innerHTML = `
-                    <div style="text-align:center; padding: 50px 20px;">
-                        <i class="fas fa-exclamation-triangle" style="font-size: 40px; color: #ff7675;"></i>
-                        <p style="margin-top:10px;">${pageName} फाइल नहीं मिली।<br><small>कृपया फाइल नाम चेक करें।</small></p>
-                    </div>`;
+                contentArea.innerHTML = "<p style='text-align:center;'>फाइल लोड नहीं हुई।</p>";
             }
         }
 
-        // Global Add Money Function
         function addMoney(amt) {
             balance += amt;
             localStorage.setItem('userBalance', balance);
-            updateMainBalance();
-            // Sweet Alert type effect using simple alert
-            alert("Success! ₹" + amt + " आपके वॉलेट में जमा हो गए।");
+            alert("Success! ₹" + amt + " जोड़े गए।");
+            // अगर यूजर अभी विड्रॉ पेज पर ही है, तो बैलेंस तुरंत अपडेट करें
+            if(document.getElementById('withdraw-balance-display')) {
+                renderWithdrawBalance();
+            }
         }
 
-        window.onload = () => {
-            updateMainBalance();
-            loadPage('home.html');
-        };
+        // विड्रॉ पेज के लिए बैलेंस रेंडरर
+        function renderWithdrawBalance() {
+            const display = document.getElementById('withdraw-balance-display');
+            if(display) {
+                display.innerText = balance.toFixed(2);
+            }
+        }
+
+        window.onload = () => loadPage('home.html');
     </script>
 </body>
 </html>
