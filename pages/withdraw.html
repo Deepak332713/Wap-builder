@@ -5,12 +5,18 @@
         
         <label style="font-size: 13px; font-weight: bold; color: #636e72;">पेमेंट का तरीका चुनें:</label>
         <div style="display: flex; gap: 10px; margin: 10px 0 20px;">
-            <button onclick="switchMethod('UPI')" id="tab-upi" style="flex:1; padding: 10px; border-radius: 10px; border: 2px solid #00b894; background: #e6fffb; color: #00b894; font-weight: bold; cursor: pointer;">UPI</button>
-            <button onclick="switchMethod('BANK')" id="tab-bank" style="flex:1; padding: 10px; border-radius: 10px; border: 2px solid #eee; background: white; color: #888; font-weight: bold; cursor: pointer;">BANK</button>
+            <button onclick="switchMethod('UPI')" id="tab-upi" style="flex:1; padding: 12px; border-radius: 10px; border: 2px solid #00b894; background: #e6fffb; color: #00b894; font-weight: bold; cursor: pointer; transition: 0.3s;">UPI</button>
+            <button onclick="switchMethod('BANK')" id="tab-bank" style="flex:1; padding: 12px; border-radius: 10px; border: 2px solid #eee; background: white; color: #888; font-weight: bold; cursor: pointer; transition: 0.3s;">BANK</button>
         </div>
 
-        <div id="input-container">
-            <input type="text" id="pay-id" placeholder="अपनी UPI ID लिखें" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; outline: none;">
+        <div id="payment-inputs" style="margin-bottom: 20px;">
+            <input type="text" id="upi-id" placeholder="अपनी UPI ID लिखें (जैसे: name@apl)" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; outline: none; display: block;">
+            
+            <div id="bank-form" style="display: none;">
+                <input type="number" id="bank-acc" placeholder="बैंक अकाउंट नंबर" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; outline: none; margin-bottom: 10px;">
+                <input type="text" id="bank-ifsc" placeholder="IFSC कोड" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; outline: none; margin-bottom: 10px;">
+                <input type="text" id="bank-name" placeholder="खाता धारक का नाम" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; outline: none;">
+            </div>
         </div>
 
         <label style="font-size: 13px; font-weight: bold; color: #636e72;">अमाउंट चुनें (मिनिमम ₹50):</label>
@@ -28,61 +34,66 @@
 <script>
     let currentMethod = "UPI";
 
-    // 1. मेथड स्विच करने का फंक्शन (UPI vs BANK)
     function switchMethod(m) {
         currentMethod = m;
         const upiBtn = document.getElementById('tab-upi');
         const bankBtn = document.getElementById('tab-bank');
-        const input = document.getElementById('pay-id');
+        const upiInput = document.getElementById('upi-id');
+        const bankForm = document.getElementById('bank-form');
 
         if(m === 'UPI') {
             upiBtn.style.background = "#e6fffb"; upiBtn.style.borderColor = "#00b894"; upiBtn.style.color = "#00b894";
             bankBtn.style.background = "white"; bankBtn.style.borderColor = "#eee"; bankBtn.style.color = "#888";
-            input.placeholder = "अपनी UPI ID लिखें";
+            upiInput.style.display = "block";
+            bankForm.style.display = "none";
         } else {
             bankBtn.style.background = "#e6fffb"; bankBtn.style.borderColor = "#00b894"; bankBtn.style.color = "#00b894";
             upiBtn.style.background = "white"; upiBtn.style.borderColor = "#eee"; upiBtn.style.color = "#888";
-            input.placeholder = "A/C No, IFSC, Name";
+            upiInput.style.display = "none";
+            bankForm.style.display = "block";
         }
     }
 
-    // 2. विड्रॉ प्रोसेस और बटन गायब करने का लॉजिक
     function processWithdraw(amount) {
-        const payId = document.getElementById('pay-id').value;
         const userBalance = parseFloat(localStorage.getItem('userBalance')) || 0;
 
-        // बैलेंस चेक
+        // 1. बैलेंस चेक
         if (userBalance < amount) {
-            alert("अपर्याप्त बैलेंस! आपको और कमाई करने की जरूरत है।");
+            alert("अपर्याप्त बैलेंस! आपको ₹" + (amount - userBalance) + " और कमाने होंगे।");
             return;
         }
 
-        if (payId.trim() === "") {
-            alert("कृपया पेमेंट जानकारी भरें।");
-            return;
+        // 2. इनपुट वैलिडेशन
+        if (currentMethod === 'UPI') {
+            const upi = document.getElementById('upi-id').value;
+            if (upi.length < 5) { alert("सही UPI ID भरें!"); return; }
+        } else {
+            const acc = document.getElementById('bank-acc').value;
+            const ifsc = document.getElementById('bank-ifsc').value;
+            const name = document.getElementById('bank-name').value;
+            if (acc === "" || ifsc === "" || name === "") { alert("बैंक की पूरी जानकारी भरें!"); return; }
         }
 
-        // विड्रॉ सफल होने पर बैलेंस कम करें (ग्लोबल फंक्शन का उपयोग)
-        // ध्यान दें: index.html में balance variable को घटाना होगा
-        if (typeof window.parent.addMoney === "function") {
-            // हम -amount भेजेंगे ताकि बैलेंस कम हो जाए
+        // 3. विड्रॉ लॉजिक
+        // index.html के ग्लोबल फंक्शन addMoney को कॉल करना (अगर उपलब्ध हो)
+        if (window.parent && typeof window.parent.addMoney === "function") {
             window.parent.addMoney(-amount);
         } else {
-            // अगर सीधे addMoney काम न करे तो यहाँ बैलेंस अपडेट करें
             let newBal = userBalance - amount;
             localStorage.setItem('userBalance', newBal);
-            document.getElementById('main-balance').innerText = newBal.toFixed(2);
+            // बैलेंस अपडेट करने के लिए पेज रिफ्रेश या डायरेक्ट DOM अपडेट
+            if(document.getElementById('main-balance')) {
+                document.getElementById('main-balance').innerText = newBal.toFixed(2);
+            }
         }
 
-        alert(`सफलता! ₹${amount} का विड्रॉ रिक्वेस्ट लग गया है।`);
+        alert(`बधाई! ₹${amount} का विड्रॉ रिक्वेस्ट सफल रहा।`);
 
-        // बटन गायब करने का लॉजिक (₹50 और ₹100 के लिए)
+        // 4. बटन गायब करने का लॉजिक (₹50 और ₹100 के लिए)
         if (amount === 50) {
             document.getElementById('btn-50').style.display = 'none';
         } else if (amount === 100) {
             document.getElementById('btn-100').style.display = 'none';
         }
-        // ₹200 और उससे ऊपर वाले बटन्स वैसे ही रहेंगे
     }
-        </script>
-        
+</script>
