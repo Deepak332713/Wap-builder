@@ -1,31 +1,88 @@
-<div style="animation: fadeIn 0.5s;">
-    <h3 style="color: #2d3436;"><i class="fas fa-university"></i> विड्रॉ सिस्टम</h3>
-    
-    <div style="background: white; padding: 15px; border-radius: 15px;">
-        <label style="font-size: 12px; font-weight: bold;">पेमेंट का तरीका:</label>
-        <select id="method" style="width: 100%; padding: 10px; margin: 8px 0; border-radius: 8px; border: 1px solid #ddd;">
-            <option value="UPI">UPI Transfer</option>
-            <option value="BANK">Bank Transfer</option>
-        </select>
+<div style="animation: fadeIn 0.4s ease-out;">
+    <h3 style="color: #2d3436; text-align: center;"><i class="fas fa-wallet" style="color: #00b894;"></i> कैश आउट</h3>
 
-        <input type="text" id="pay-id" placeholder="UPI ID या बैंक अकाउंट नंबर" style="width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;">
+    <div style="background: white; padding: 20px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
         
-        <input type="number" id="w-amt" placeholder="अमाउंट (Min ₹100)" style="width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;">
+        <label style="font-size: 13px; font-weight: bold; color: #636e72;">पेमेंट का तरीका चुनें:</label>
+        <div style="display: flex; gap: 10px; margin: 10px 0 20px;">
+            <button onclick="switchMethod('UPI')" id="tab-upi" style="flex:1; padding: 10px; border-radius: 10px; border: 2px solid #00b894; background: #e6fffb; color: #00b894; font-weight: bold; cursor: pointer;">UPI</button>
+            <button onclick="switchMethod('BANK')" id="tab-bank" style="flex:1; padding: 10px; border-radius: 10px; border: 2px solid #eee; background: white; color: #888; font-weight: bold; cursor: pointer;">BANK</button>
+        </div>
 
-        <button onclick="handleWithdraw()" style="width: 100%; background: #00b894; color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; margin-top: 10px; cursor: pointer;">पैसे निकालें</button>
+        <div id="input-container">
+            <input type="text" id="pay-id" placeholder="अपनी UPI ID लिखें" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; outline: none;">
+        </div>
+
+        <label style="font-size: 13px; font-weight: bold; color: #636e72;">अमाउंट चुनें (मिनिमम ₹50):</label>
+        <div id="amount-btns" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+            <button class="w-btn" id="btn-50" onclick="processWithdraw(50)" style="background: #00b894; color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer;">₹50 निकालें</button>
+            <button class="w-btn" id="btn-100" onclick="processWithdraw(100)" style="background: #00b894; color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer;">₹100 निकालें</button>
+            <button class="w-btn" id="btn-200" onclick="processWithdraw(200)" style="background: #0984e3; color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer;">₹200 निकालें</button>
+            <button class="w-btn" id="btn-500" onclick="processWithdraw(500)" style="background: #6c5ce7; color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer;">₹500 निकालें</button>
+        </div>
+
+        <p id="msg" style="text-align: center; font-size: 12px; color: #888; margin-top: 15px;">पेमेंट 24 घंटे के अंदर भेज दिया जाएगा।</p>
     </div>
 </div>
 
 <script>
-    function handleWithdraw() {
-        let amt = document.getElementById('w-amt').value;
-        let id = document.getElementById('pay-id').value;
-        
-        if(amt < 100 || id == "") {
-            alert("कृपया सही जानकारी भरें (न्यूनतम ₹100)");
+    let currentMethod = "UPI";
+
+    // 1. मेथड स्विच करने का फंक्शन (UPI vs BANK)
+    function switchMethod(m) {
+        currentMethod = m;
+        const upiBtn = document.getElementById('tab-upi');
+        const bankBtn = document.getElementById('tab-bank');
+        const input = document.getElementById('pay-id');
+
+        if(m === 'UPI') {
+            upiBtn.style.background = "#e6fffb"; upiBtn.style.borderColor = "#00b894"; upiBtn.style.color = "#00b894";
+            bankBtn.style.background = "white"; bankBtn.style.borderColor = "#eee"; bankBtn.style.color = "#888";
+            input.placeholder = "अपनी UPI ID लिखें";
         } else {
-            // यहाँ आप विड्रॉ का बैलेंस चेक लॉजिक डाल सकते हैं
-            alert("विड्रॉ रिक्वेस्ट ₹" + amt + " के लिए सफल रही!");
+            bankBtn.style.background = "#e6fffb"; bankBtn.style.borderColor = "#00b894"; bankBtn.style.color = "#00b894";
+            upiBtn.style.background = "white"; upiBtn.style.borderColor = "#eee"; upiBtn.style.color = "#888";
+            input.placeholder = "A/C No, IFSC, Name";
         }
     }
-</script>
+
+    // 2. विड्रॉ प्रोसेस और बटन गायब करने का लॉजिक
+    function processWithdraw(amount) {
+        const payId = document.getElementById('pay-id').value;
+        const userBalance = parseFloat(localStorage.getItem('userBalance')) || 0;
+
+        // बैलेंस चेक
+        if (userBalance < amount) {
+            alert("अपर्याप्त बैलेंस! आपको और कमाई करने की जरूरत है।");
+            return;
+        }
+
+        if (payId.trim() === "") {
+            alert("कृपया पेमेंट जानकारी भरें।");
+            return;
+        }
+
+        // विड्रॉ सफल होने पर बैलेंस कम करें (ग्लोबल फंक्शन का उपयोग)
+        // ध्यान दें: index.html में balance variable को घटाना होगा
+        if (typeof window.parent.addMoney === "function") {
+            // हम -amount भेजेंगे ताकि बैलेंस कम हो जाए
+            window.parent.addMoney(-amount);
+        } else {
+            // अगर सीधे addMoney काम न करे तो यहाँ बैलेंस अपडेट करें
+            let newBal = userBalance - amount;
+            localStorage.setItem('userBalance', newBal);
+            document.getElementById('main-balance').innerText = newBal.toFixed(2);
+        }
+
+        alert(`सफलता! ₹${amount} का विड्रॉ रिक्वेस्ट लग गया है।`);
+
+        // बटन गायब करने का लॉजिक (₹50 और ₹100 के लिए)
+        if (amount === 50) {
+            document.getElementById('btn-50').style.display = 'none';
+        } else if (amount === 100) {
+            document.getElementById('btn-100').style.display = 'none';
+        }
+        // ₹200 और उससे ऊपर वाले बटन्स वैसे ही रहेंगे
+    }
+        </script>
+        
