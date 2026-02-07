@@ -3,54 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mega Earning App</title>
+    <title>Mega Earn Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { font-family: Arial; background: #f4f4f4; text-align: center; margin: 0; }
-        .banner img { width: 100%; max-height: 200px; object-fit: cover; }
-        .user-box { background: white; margin: 20px; padding: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .task-btn { display: block; width: 80%; margin: 10px auto; padding: 15px; border: none; border-radius: 5px; color: white; font-weight: bold; cursor: pointer; }
-        .withdraw-section { background: #eee; padding: 20px; margin-top: 20px; }
-        input { padding: 10px; width: 60%; margin-bottom: 10px; }
+        :root { --primary: #6c5ce7; --secondary: #a29bfe; --bg: #f8f9fa; --dark: #2d3436; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding-bottom: 70px; }
+        
+        /* Header & Banner */
+        .banner img { width: 100%; height: 180px; object-fit: cover; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; }
+        
+        /* Balance Card */
+        .balance-card { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; margin: -40px 20px 20px; padding: 20px; border-radius: 15px; box-shadow: 0 10px 20px rgba(108, 92, 231, 0.3); position: relative; }
+        
+        /* Folders/Sections */
+        .page-content { display: none; padding: 20px; animation: fadeIn 0.3s ease; }
+        .active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Task Buttons */
+        .task-card { background: white; margin-bottom: 12px; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .task-btn { background: var(--primary); color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; }
+
+        /* Bottom Nav */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 10px 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); border-top-left-radius: 20px; border-top-right-radius: 20px; }
+        .nav-item { color: #b2bec3; font-size: 12px; cursor: pointer; text-decoration: none; }
+        .nav-item.active-nav { color: var(--primary); font-weight: bold; }
+        .nav-item i { font-size: 20px; display: block; margin-bottom: 2px; }
+
+        /* Referral Box */
+        .refer-box { border: 2px dashed var(--primary); padding: 20px; border-radius: 15px; background: #f0f3ff; }
+        
+        input { width: 80%; padding: 12px; border-radius: 10px; border: 1px solid #ddd; margin: 10px 0; }
     </style>
 </head>
 <body>
 
     <div class="banner">
-        <img src="images/logo.png" alt="App Banner" onerror="this.src='https://via.placeholder.com/450x180?text=Mega+Earn+App'">
+        <img src="images/logo.png" alt="Banner" onerror="this.src='https://img.freepik.com/free-vector/digital-money-transfer-technology-background_1017-17454.jpg'">
     </div>
 
-    <div class="user-box">
-        <h3>👤 यूजर: <span id="user-name">Guest</span></h3>
-        <h2 style="color: green;">बैलेंस: ₹<span id="balance">500</span></h2>
+    <div class="balance-card">
+        <p style="margin: 0; font-size: 14px; opacity: 0.9;">कुल बैलेंस</p>
+        <h1 style="margin: 5px 0;">₹<span id="balance">500.00</span></h1>
+        <p style="margin: 0; font-size: 12px;">ID: 9928374</p>
     </div>
 
-    <h3>डेली टास्क</h3>
-    <button class="task-btn" style="background: #3498db;" onclick="earn(20)">Watch Video (+₹20)</button>
-    <button class="task-btn" style="background: #9b59b6;" onclick="earn(10)">Daily Reward (+₹10)</button>
+    <div id="home" class="page-content active">
+        <h3>🔥 हॉट टास्क</h3>
+        <div class="task-card">
+            <span>Daily Check-in</span>
+            <button class="task-btn" onclick="earn(5)">Claim ₹5</button>
+        </div>
+        <div class="task-card">
+            <span>Spin & Win</span>
+            <button class="task-btn" onclick="earn(15)">Spin Now</button>
+        </div>
+    </div>
 
-    <div class="withdraw-section">
-        <h3>विड्रॉ (Withdraw)</h3>
-        <input type="number" id="withdraw-amt" placeholder="अमाउंट लिखें">
-        <button class="task-btn" style="background: #e74c3c;" onclick="withdraw()">REDEEM NOW</button>
+    <div id="tasks" class="page-content">
+        <h3>📂 टास्क फोल्डर</h3>
+        <div class="task-card">
+            <span>App Install Task</span>
+            <button class="task-btn" onclick="earn(50)">+ ₹50</button>
+        </div>
+        <div class="task-card">
+            <span>Survey Task</span>
+            <button class="task-btn" onclick="earn(30)">+ ₹30</button>
+        </div>
+    </div>
+
+    <div id="video" class="page-content">
+        <h3>📺 वीडियो रिवॉर्ड</h3>
+        <div class="task-card">
+            <span>Ad Video 1 (30s)</span>
+            <button class="task-btn" onclick="earn(10)">Watch</button>
+        </div>
+        <div class="task-card">
+            <span>Promotion Video</span>
+            <button class="task-btn" onclick="earn(20)">Watch</button>
+        </div>
+    </div>
+
+    <div id="refer" class="page-content">
+        <h3>👥 दोस्तों को जोड़ें</h3>
+        <div class="refer-box">
+            <p>अपना रेफरल कोड शेयर करें और हर दोस्त पर ₹100 कमाएं!</p>
+            <h2 style="letter-spacing: 5px; color: var(--primary);">MEGA500</h2>
+            <button class="task-btn" style="width: 100%;">Share Now</button>
+        </div>
+    </div>
+
+    <div id="user" class="page-content">
+        <h3>👤 मेरा प्रोफाइल</h3>
+        <div class="task-card">
+            <span>नाम: Guest User</span>
+        </div>
+        <hr>
+        <h4>💸 विड्रॉ फोल्डर</h4>
+        <input type="number" id="withdraw-amt" placeholder="अमाउंट लिखें (Min ₹100)">
+        <button class="task-btn" style="width: 100%; background: #e17055;" onclick="withdraw()">REDEEM TO UPI</button>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item active-nav" onclick="showPage('home', this)"><i class="fas fa-home"></i>होम</div>
+        <div class="nav-item" onclick="showPage('tasks', this)"><i class="fas fa-folder-open"></i>टास्क</div>
+        <div class="nav-item" onclick="showPage('video', this)"><i class="fas fa-play-circle"></i>वीडियो</div>
+        <div class="nav-item" onclick="showPage('refer', this)"><i class="fas fa-users"></i>रेफर</div>
+        <div class="nav-item" onclick="showPage('user', this)"><i class="fas fa-user-circle"></i>यूजर</div>
     </div>
 
     <script>
         let balance = 500;
 
+        function showPage(pageId, element) {
+            // सभी पेज छुपाएं
+            document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+            // चुनी हुई आईडी वाला पेज दिखाएं
+            document.getElementById(pageId).classList.add('active');
+            
+            // Nav icons कलर चेंज
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active-nav'));
+            element.classList.add('active-nav');
+        }
+
         function earn(amt) {
             balance += amt;
-            document.getElementById('balance').innerText = balance;
-            alert("बधाई! आपने ₹" + amt + " कमाए।");
+            document.getElementById('balance').innerText = balance.toFixed(2);
+            alert("सफलता! आपके वॉलेट में ₹" + amt + " जुड़ गए।");
         }
 
         function withdraw() {
-            let amt = document.getElementById('withdraw-amt').value;
+            let amt = parseFloat(document.getElementById('withdraw-amt').value);
             if (amt >= 100 && amt <= balance) {
                 balance -= amt;
-                document.getElementById('balance').innerText = balance;
-                alert("विड्रॉ सफल रहा!");
+                document.getElementById('balance').innerText = balance.toFixed(2);
+                alert("विड्रॉ रिक्वेस्ट सफल! 24 घंटे में बैलेंस मिल जाएगा।");
             } else {
-                alert("बैलेंस कम है या अमाउंट गलत है!");
+                alert("अमाउंट कम से कम ₹100 होना चाहिए!");
             }
         }
     </script>
