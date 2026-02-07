@@ -3,64 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mega Earn Pro</title>
+    <title>Mega Earn Pro - Modular</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --primary: #6c5ce7; --bg: #f8f9fa; }
         body { font-family: sans-serif; background: var(--bg); margin: 0; padding-bottom: 80px; }
-        .balance-card { background: var(--primary); color: white; margin: 20px; padding: 25px; border-radius: 20px; box-shadow: 0 8px 20px rgba(108, 92, 231, 0.3); }
-        #content-area { padding: 15px; min-height: 400px; }
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #eee; z-index: 1000; }
-        .nav-item { color: #888; font-size: 11px; cursor: pointer; text-align: center; flex: 1; }
+        .banner img { width: 100%; height: 160px; object-fit: cover; }
+        .balance-card { background: var(--primary); color: white; margin: -30px 20px 20px; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        #content-area { padding: 20px; min-height: 300px; }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #ddd; }
+        .nav-item { color: #888; font-size: 12px; cursor: pointer; text-align: center; }
         .nav-item.active { color: var(--primary); font-weight: bold; }
-        .nav-item i { font-size: 20px; display: block; margin-bottom: 4px; }
+        .nav-item i { font-size: 22px; display: block; }
     </style>
 </head>
 <body>
-    <div class="balance-card">
-        <p style="margin:0; opacity: 0.8;">कुल बैलेंस</p>
-        <h1 style="margin:5px 0;">₹<span id="main-balance">0.00</span></h1>
+    <div class="banner">
+        <img src="https://via.placeholder.com/450x180" alt="Banner">
     </div>
 
-    <div id="content-area"></div>
+    <div class="balance-card">
+        <p style="margin:0;">कुल बैलेंस</p>
+        <h1 style="margin:5px 0;">₹<span id="main-balance">500.00</span></h1>
+    </div>
 
-    <nav class="bottom-nav">
+    <div id="content-area"><h3>लोड हो रहा है...</h3></div>
+
+    <div class="bottom-nav">
         <div class="nav-item active" onclick="loadPage('home.html', this)"><i class="fas fa-home"></i>होम</div>
         <div class="nav-item" onclick="loadPage('tasks.html', this)"><i class="fas fa-tasks"></i>टास्क</div>
         <div class="nav-item" onclick="loadPage('refer.html', this)"><i class="fas fa-user-plus"></i>रेफर</div>
         <div class="nav-item" onclick="loadPage('withdraw.html', this)"><i class="fas fa-wallet"></i>विड्रॉ</div>
         <div class="nav-item" onclick="loadPage('user.html', this)"><i class="fas fa-user-circle"></i>यूजर</div>
-    </nav>
+    </div>
 
     <script>
         let balance = localStorage.getItem('userBalance') ? parseFloat(localStorage.getItem('userBalance')) : 500;
         
-        function updateUI() {
+        function updateMainBalance() {
             document.getElementById('main-balance').innerText = balance.toFixed(2);
         }
 
         async function loadPage(pageName, element) {
             try {
-                // यहाँ से 'pages/' हटा दिया गया है ताकि फाइलें लोड हों
+                // 'pages/' हटा दिया गया है ताकि फाइलें रूट से लोड हों
                 const response = await fetch(pageName);
                 const html = await response.text();
                 document.getElementById('content-area').innerHTML = html;
+
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
                 if(element) element.classList.add('active');
-                if(pageName === 'withdraw.html') renderHistory();
+                
+                // अगर विड्रॉ पेज लोड हो रहा है तो हिस्ट्री रेंडर करें
+                if(pageName === 'withdraw.html' && typeof renderHistory === 'function') renderHistory();
             } catch (err) {
-                document.getElementById('content-area').innerHTML = "फाइल लोड एरर!";
+                document.getElementById('content-area').innerHTML = "फाइल लोड एरर: " + pageName;
             }
         }
 
         function addMoney(amt) {
             balance += amt;
             localStorage.setItem('userBalance', balance);
-            updateUI();
-            alert("₹" + amt + " प्राप्त हुए!");
+            updateMainBalance();
+            alert("₹" + amt + " जोड़े गए!");
         }
 
-        window.onload = () => { updateUI(); loadPage('home.html'); };
+        window.onload = () => {
+            updateMainBalance();
+            loadPage('home.html');
+        };
     </script>
 </body>
 </html>
