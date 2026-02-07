@@ -1,7 +1,31 @@
-<div style="background: white; padding: 15px; border-radius: 10px;">
-    <h3>💸 विड्रॉ फोल्डर</h3>
-    <input type="text" id="upi" placeholder="UPI ID दर्ज करें" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px;">
-    <input type="number" id="amt" placeholder="अमाउंट (Min ₹100)" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px;">
-    <button onclick="alert('रिक्वेस्ट भेज दी गई!')" style="width: 100%; background: #00b894; color: white; border: none; padding: 12px; border-radius: 5px; font-weight: bold;">बैंक/UPI में भेजें</button>
+<div style="animation: fadeIn 0.5s;">
+    <h3 style="color: #2d3436;"><i class="fas fa-university"></i> विड्रॉ सिस्टम</h3>
+    
+    <div style="background: white; padding: 15px; border-radius: 15px;">
+        <label style="font-size: 12px; font-weight: bold;">पेमेंट का तरीका:</label>
+        <select id="method" style="width: 100%; padding: 10px; margin: 8px 0; border-radius: 8px; border: 1px solid #ddd;">
+            <option value="UPI">UPI Transfer</option>
+            <option value="BANK">Bank Transfer</option>
+        </select>
+
+        <input type="text" id="pay-id" placeholder="UPI ID या बैंक अकाउंट नंबर" style="width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;">
+        
+        <input type="number" id="w-amt" placeholder="अमाउंट (Min ₹100)" style="width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;">
+
+        <button onclick="handleWithdraw()" style="width: 100%; background: #00b894; color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; margin-top: 10px; cursor: pointer;">पैसे निकालें</button>
+    </div>
 </div>
 
+<script>
+    function handleWithdraw() {
+        let amt = document.getElementById('w-amt').value;
+        let id = document.getElementById('pay-id').value;
+        
+        if(amt < 100 || id == "") {
+            alert("कृपया सही जानकारी भरें (न्यूनतम ₹100)");
+        } else {
+            // यहाँ आप विड्रॉ का बैलेंस चेक लॉजिक डाल सकते हैं
+            alert("विड्रॉ रिक्वेस्ट ₹" + amt + " के लिए सफल रही!");
+        }
+    }
+</script>
