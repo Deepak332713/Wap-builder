@@ -1,29 +1,45 @@
 <div style="animation: fadeIn 0.5s;">
-    <h3 style="color: #2d3436;"><i class="fas fa-tasks"></i> पेंडिंग टास्क</h3>
-    
-    <div style="background: white; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-        <div style="display: flex; align-items: center;">
-            <div style="background: #e1f5fe; padding: 10px; border-radius: 10px; margin-right: 12px;">
-                <i class="fab fa-youtube" style="color: #ff0000; font-size: 20px;"></i>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding-top: 10px;">
+        
+        <div style="background: white; padding: 20px; border-radius: 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #eee;">
+            <div style="background: #ffebee; width: 50px; height: 50px; line-height: 50px; border-radius: 50%; margin: 0 auto 10px; color: #ff0000; font-size: 24px;">
+                <i class="fab fa-youtube"></i>
             </div>
-            <div>
-                <b style="font-size: 14px;">यूट्यूब टास्क</b>
-                <p style="margin:0; font-size: 11px; color: #b2bec3;">चैनल सब्सक्राइब करें</p>
-            </div>
+            <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">Youtube</div>
+            <button onclick="addMoney(20)" style="background: #ff0000; color: white; border: none; padding: 6px 12px; border-radius: 12px; font-size: 12px; font-weight: bold; cursor: pointer;">
+                +₹20
+            </button>
         </div>
-        <button onclick="addMoney(20)" style="background: #00cec9; color: white; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold;">+₹20</button>
-    </div>
 
-    <div style="background: white; padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-        <div style="display: flex; align-items: center;">
-            <div style="background: #fff3e0; padding: 10px; border-radius: 10px; margin-right: 12px;">
-                <i class="fas fa-download" style="color: #ff9800; font-size: 20px;"></i>
+        <div style="background: white; padding: 20px; border-radius: 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #eee;">
+            <div style="background: #e3f2fd; width: 50px; height: 50px; line-height: 50px; border-radius: 50%; margin: 0 auto 10px; color: #0984e3; font-size: 24px;">
+                <i class="fas fa-file-download"></i>
             </div>
-            <div>
-                <b style="font-size: 14px;">ऐप डाउनलोड</b>
-                <p style="margin:0; font-size: 11px; color: #b2bec3;">इंस्टॉल और रजिस्टर</p>
-            </div>
+            <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">Install</div>
+            <button onclick="addMoney(50)" style="background: #0984e3; color: white; border: none; padding: 6px 12px; border-radius: 12px; font-size: 12px; font-weight: bold; cursor: pointer;">
+                +₹50
+            </button>
         </div>
-        <button onclick="addMoney(50)" style="background: #0984e3; color: white; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold;">+₹50</button>
+
+        <div style="background: white; padding: 20px; border-radius: 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #eee;">
+            <div style="background: #f1f8e9; width: 50px; height: 50px; line-height: 50px; border-radius: 50%; margin: 0 auto 10px; color: #4caf50; font-size: 24px;">
+                <i class="fas fa-question-circle"></i>
+            </div>
+            <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">Quiz</div>
+            <button onclick="addMoney(10)" style="background: #4caf50; color: white; border: none; padding: 6px 12px; border-radius: 12px; font-size: 12px; font-weight: bold; cursor: pointer;">
+                +₹10
+            </button>
+        </div>
+
+        <div style="background: white; padding: 20px; border-radius: 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #eee;">
+            <div style="background: #f3e5f5; width: 50px; height: 50px; line-height: 50px; border-radius: 50%; margin: 0 auto 10px; color: #9c27b0; font-size: 24px;">
+                <i class="fas fa-star"></i>
+            </div>
+            <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px;">Rating</div>
+            <button onclick="addMoney(5)" style="background: #9c27b0; color: white; border: none; padding: 6px 12px; border-radius: 12px; font-size: 12px; font-weight: bold; cursor: pointer;">
+                +₹5
+            </button>
+        </div>
+
     </div>
 </div>
