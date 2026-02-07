@@ -1,115 +1,92 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Mini Lovable App Builder</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+import tkinter as tk
+from tkinter import messagebox, ttk
+from PIL import Image, ImageTk
 
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-html,body{height:100%;font-family:Arial}
+class EarningApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Mega Cash - Earning App")
+        self.root.geometry("400x650")
+        self.root.configure(bg="#f0f2f5")
 
-.main{
-  display:flex;
-  height:100vh;
-}
+        # यूजर डेटा
+        self.user_name = "Rahul Kumar"
+        self.balance = 500.00  # शुरुआती बैलेंस (Coins/Rupees)
 
-/* LEFT */
-.editor{
-  width:50%;
-  background:#0f172a;
-  color:white;
-  padding:10px;
-}
-.editor h2{
-  margin-bottom:8px;
-}
-textarea{
-  width:100%;
-  height:90%;
-  background:#020617;
-  color:#22c55e;
-  border:none;
-  padding:10px;
-  font-family:monospace;
-  font-size:14px;
-  border-radius:6px;
-}
+        self.create_widgets()
 
-/* RIGHT */
-.preview{
-  width:50%;
-  background:#e5e7eb;
-  padding:10px;
-}
-.preview h2{
-  margin-bottom:8px;
-}
-.phone{
-  width:100%;
-  height:90%;
-  background:black;
-  border-radius:20px;
-  padding:10px;
-}
-iframe{
-  width:100%;
-  height:100%;
-  border:none;
-  background:white;
-  border-radius:15px;
-}
+    def create_widgets(self):
+        # --- 1. इमेज सेक्शन (Banner) ---
+        try:
+            # यहाँ अपनी इमेज फाइल का नाम दें, जैसे 'banner.png'
+            self.img = Image.open("banner.png") 
+            self.img = self.img.resize((380, 150))
+            self.banner_img = ImageTk.PhotoImage(self.img)
+            self.banner_label = tk.Label(self.root, image=self.banner_img, bg="#f0f2f5")
+            self.banner_label.pack(pady=10)
+        except:
+            self.banner_label = tk.Label(self.root, text="Earn Daily Rewards!", font=("Arial", 18, "bold"), 
+                                         bg="#4CAF50", fg="white", height=5, width=35)
+            self.banner_label.pack(pady=10)
 
-/* BUTTON */
-.build{
-  margin-top:6px;
-  padding:8px 14px;
-  background:#2563eb;
-  color:white;
-  border:none;
-  border-radius:5px;
-  cursor:pointer;
-}
-</style>
-</head>
+        # --- 2. यूजर सिस्टम (User Profile) ---
+        user_frame = tk.Frame(self.root, bg="white", bd=1, relief="groove")
+        user_frame.pack(fill="x", padx=20, pady=5)
+        
+        tk.Label(user_frame, text=f"👤 {self.user_name}", font=("Arial", 12, "bold"), bg="white").pack(side="left", padx=10, pady=10)
+        self.balance_label = tk.Label(user_frame, text=f"Balance: ₹{self.balance}", font=("Arial", 12), fg="green", bg="white")
+        self.balance_label.pack(side="right", padx=10)
 
-<body>
+        # --- 3. टास्क फोल्डर (Tasks Section) ---
+        tk.Label(self.root, text="आज के टास्क (Daily Tasks)", font=("Arial", 14, "bold"), bg="#f0f2f5").pack(anchor="w", padx=20, pady=10)
+        
+        task_container = tk.Frame(self.root, bg="#f0f2f5")
+        task_container.pack(fill="both", padx=20)
 
-<div class="main">
+        tasks = [("Watch Video", 10), ("Daily Check-in", 5), ("Spin Wheel", 15)]
+        for task_name, reward in tasks:
+            btn = tk.Button(task_container, text=f"{task_name} (+₹{reward})", 
+                            command=lambda r=reward: self.complete_task(r),
+                            font=("Arial", 10), bg="white", relief="flat", pady=8)
+            btn.pack(fill="x", pady=3)
 
-  <!-- CODE SIDE -->
-  <div class="editor">
-    <h2>✍️ Write App Code</h2>
-    <textarea id="code">
-<!DOCTYPE html>
-<html>
-<body style="font-family:Arial;text-align:center">
-<h2>My First App</h2>
-<p>Welcome to my app</p>
-<button onclick="alert('App Working!')">Click Me</button>
-</body>
-</html>
-    </textarea>
-    <button class="build" onclick="build()">Build App</button>
-  </div>
+        # --- 4. विड्रॉ सिस्टम (Withdraw Section) ---
+        tk.Label(self.root, text="विड्रॉ (Withdraw Money)", font=("Arial", 14, "bold"), bg="#f0f2f5").pack(anchor="w", padx=20, pady=15)
+        
+        self.amount_entry = tk.Entry(self.root, font=("Arial", 14), justify="center")
+        self.amount_entry.pack(fill="x", padx=40, pady=5)
+        self.amount_entry.insert(0, "Enter Amount")
 
-  <!-- PREVIEW SIDE -->
-  <div class="preview">
-    <h2>📱 App Preview</h2>
-    <div class="phone">
-      <iframe id="view"></iframe>
-    </div>
-  </div>
+        withdraw_btn = tk.Button(self.root, text="Redeem to UPI / Wallet", command=self.withdraw_money,
+                                 bg="#FF5722", fg="white", font=("Arial", 12, "bold"), pady=10)
+        withdraw_btn.pack(fill="x", padx=40, pady=10)
 
-</div>
+    # लॉजिक: टास्क पूरा करना
+    def complete_task(self, reward):
+        self.balance += reward
+        self.update_ui()
+        messagebox.showinfo("Success", f"बधाई हो! आपने ₹{reward} जीत लिए हैं।")
 
-<script>
-function build(){
-  document.getElementById("view").srcdoc =
-  document.getElementById("code").value;
-}
-build();
-</script>
+    # लॉजिक: विड्रॉ करना
+    def withdraw_money(self):
+        try:
+            amt = float(self.amount_entry.get())
+            if amt <= self.balance and amt >= 100:
+                self.balance -= amt
+                self.update_ui()
+                messagebox.showinfo("Withdrawal", f"₹{amt} का विड्रॉ रिक्वेस्ट सफल रहा!")
+            elif amt < 100:
+                messagebox.showwarning("Error", "न्यूनतम विड्रॉ ₹100 है।")
+            else:
+                messagebox.showerror("Error", "अपर्याप्त बैलेंस!")
+        except ValueError:
+            messagebox.showerror("Error", "कृपया सही अंक भरें।")
 
-</body>
-</html>
+    def update_ui(self):
+        self.balance_label.config(text=f"Balance: ₹{self.balance}")
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = EarningApp(root)
+    root.mainloop()
+              
