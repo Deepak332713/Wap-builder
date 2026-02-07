@@ -3,126 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mega Earn Pro | Premium</title>
+    <title>Mega Earn Pro | Ultra Premium</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        /* Modern Design Tokens */
         :root {
             --primary: #6c5ce7;
             --accent: #00cec9;
-            --bg-gradient: linear-gradient(135deg, #6c5ce7 0%, #d63031 100%);
+            --premium-gradient: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 50%, #d63031 100%);
+            --glass: rgba(255, 255, 255, 0.12);
         }
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: #f0f2f5;
+            background-color: #0f172a; /* Deep Dark Background */
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+            background-attachment: fixed;
             margin: 0;
-            padding-bottom: 90px;
-            overflow-x: hidden;
-            color: #2d3436;
+            padding-bottom: 100px;
+            color: #f8fafc;
+            min-height: 100vh;
         }
 
-        /* Top Header - अब यह छोटा और साफ है */
+        /* Top Header - Glassy Premium Look */
         .top-header {
-            background: var(--bg-gradient);
-            height: 100px; /* ऊंचाई कम कर दी गई है */
-            border-radius: 0 0 30px 30px;
-            position: relative;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            height: 80px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 2000;
         }
 
         .header-content {
-            padding: 20px;
-            color: white;
+            padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        #content-area {
-            padding: 20px;
-            min-height: 400px;
-            animation: fadeIn 0.5s ease-in;
+        .brand-name {
+            font-size: 20px;
+            font-weight: 800;
+            background: linear-gradient(to right, #fff, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 0.5px;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+        /* Content Area with smooth entrance */
+        #content-area {
+            padding: 20px;
+            min-height: 450px;
+            animation: contentFade 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes contentFade {
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Bottom Navigation */
+        /* Nav Bar - Floating Mesh Effect */
         .bottom-nav {
             position: fixed;
-            bottom: 15px;
-            left: 15px;
-            right: 15px;
-            background: rgba(45, 52, 54, 0.95);
-            backdrop-filter: blur(10px);
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(25px);
             display: flex;
             justify-content: space-around;
-            padding: 12px 5px;
-            border-radius: 25px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            z-index: 1000;
+            padding: 15px 10px;
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 3000;
         }
 
         .nav-item {
-            color: #b2bec3;
-            font-size: 11px;
+            color: #94a3b8;
+            font-size: 10px;
+            font-weight: 500;
             cursor: pointer;
             text-align: center;
-            transition: all 0.3s ease;
-            flex: 1;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
         }
 
         .nav-item i {
-            font-size: 20px;
+            font-size: 22px;
             display: block;
-            margin-bottom: 4px;
+            margin-bottom: 5px;
         }
 
         .nav-item.active {
             color: #fff;
-            transform: translateY(-5px);
+            transform: translateY(-10px);
         }
 
         .nav-item.active i {
-            color: var(--accent);
+            background: var(--premium-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 8px rgba(108, 92, 231, 0.6));
+        }
+
+        /* Active Indicator Dot */
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 5px;
+            height: 5px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        /* Modern Premium Loader */
+        .loader-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
         }
 
         .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid var(--primary);
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255,255,255,0.1);
             border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 50px auto;
+            border-top-color: var(--accent);
+            animation: spin 0.8s cubic-bezier(0.5, 0.1, 0.5, 0.9) infinite;
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Custom Alert Style (Optional tweak for better look) */
+        .alert-box {
+            animation: slideDown 0.4s ease;
+        }
     </style>
 </head>
 <body>
 
     <div class="top-header">
         <div class="header-content">
-            <div>
-                <h2 style="margin:0; font-size: 18px;">Mega Earn <span style="color: var(--accent);">Pro</span></h2>
-                <p style="margin:0; font-size: 12px; opacity: 0.8;">Premium Earning App</p>
+            <div class="brand-name">MEGA EARN PRO</div>
+            <div style="background: rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1);">
+                <i class="fas fa-crown" style="color: #ffd700;"></i>
             </div>
-            <i class="fas fa-user-circle" style="font-size: 24px; opacity: 0.9;"></i>
         </div>
     </div>
 
     <div id="content-area">
-        <div class="loader"></div>
+        <div class="loader-container">
+            <div class="loader"></div>
+        </div>
     </div>
 
     <nav class="bottom-nav">
-        <div class="nav-item active" onclick="loadPage('home.html', this)"><i class="fas fa-th-large"></i>होम</div>
-        <div class="nav-item" onclick="loadPage('tasks.html', this)"><i class="fas fa-rocket"></i>टास्क</div>
-        <div class="nav-item" onclick="loadPage('refer.html', this)"><i class="fas fa-gift"></i>रेफर</div>
+        <div class="nav-item active" onclick="loadPage('home.html', this)"><i class="fas fa-layer-group"></i>होम</div>
+        <div class="nav-item" onclick="loadPage('tasks.html', this)"><i class="fas fa-bolt"></i>टास्क</div>
+        <div class="nav-item" onclick="loadPage('refer.html', this)"><i class="fas fa-circle-nodes"></i>रेफर</div>
         <div class="nav-item" onclick="loadPage('withdraw.html', this)"><i class="fas fa-wallet"></i>विड्रॉ</div>
-        <div class="nav-item" onclick="loadPage('user.html', this)"><i class="fas fa-user-circle"></i>यूजर</div>
+        <div class="nav-item" onclick="loadPage('user.html', this)"><i class="fas fa-user-astronaut"></i>प्रोफाइल</div>
     </nav>
 
     <script>
@@ -130,7 +181,7 @@
 
         async function loadPage(pageName, element) {
             const contentArea = document.getElementById('content-area');
-            contentArea.innerHTML = '<div class="loader"></div>';
+            contentArea.innerHTML = '<div class="loader-container"><div class="loader"></div></div>';
             
             try {
                 const response = await fetch(pageName);
@@ -142,29 +193,30 @@
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
                 if(element) element.classList.add('active');
                 
-                // अगर विड्रॉ पेज है, तो वहाँ बैलेंस दिखाने वाला फंक्शन चलाएं
+                // केवल विड्रॉ पेज पर बैलेंस रेंडर करना
                 if(pageName === 'withdraw.html') {
-                    if(typeof renderWithdrawBalance === 'function') {
-                        renderWithdrawBalance();
-                    }
+                    renderWithdrawBalance();
                     if(typeof renderHistory === 'function') renderHistory();
                 }
             } catch (err) {
-                contentArea.innerHTML = "<p style='text-align:center;'>फाइल लोड नहीं हुई।</p>";
+                contentArea.innerHTML = `
+                    <div style="text-align:center; padding-top:50px;">
+                        <i class="fas fa-file-circle-exclamation" style="font-size:40px; color:rgba(255,255,255,0.2);"></i>
+                        <p style="color:rgba(255,255,255,0.5); margin-top:15px;">फाइल '${pageName}' नहीं मिली।</p>
+                    </div>`;
             }
         }
 
         function addMoney(amt) {
             balance += amt;
             localStorage.setItem('userBalance', balance);
-            alert("Success! ₹" + amt + " जोड़े गए।");
-            // अगर यूजर अभी विड्रॉ पेज पर ही है, तो बैलेंस तुरंत अपडेट करें
-            if(document.getElementById('withdraw-balance-display')) {
-                renderWithdrawBalance();
-            }
+            
+            // Premium Alert Effect
+            alert("बधाई हो! ₹" + amt + " आपके वॉलेट में जोड़ दिए गए हैं।");
+            
+            renderWithdrawBalance();
         }
 
-        // विड्रॉ पेज के लिए बैलेंस रेंडरर
         function renderWithdrawBalance() {
             const display = document.getElementById('withdraw-balance-display');
             if(display) {
