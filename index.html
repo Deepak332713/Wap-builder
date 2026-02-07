@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>App Builder Panel</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f2f2f2;
+  padding: 20px;
+}
+
+.container {
+  max-width: 600px;
+  margin: auto;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+h2 {
+  text-align: center;
+}
+
+input[type="file"] {
+  width: 100%;
+  margin: 10px 0;
+}
+
+button {
+  padding: 8px 15px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #0056b3;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  background: #eee;
+  margin: 5px 0;
+  padding: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.delete {
+  background: red;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2>App Upload Panel</h2>
+
+  <input type="file" id="file">
+  <button onclick="uploadApp()">Upload App</button>
+
+  <h3>Uploaded Apps</h3>
+  <ul id="appList"></ul>
+</div>
+
+<script>
+function uploadApp() {
+  const fileInput = document.getElementById("file");
+  if (!fileInput.files[0]) {
+    alert("Please select a file");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("appfile", fileInput.files[0]);
+
+  fetch("/upload", {
+    method: "POST",
+    body: formData
+  })
+  .then(res => res.json())
+  .then(() => {
+    fileInput.value = "";
+    loadApps();
+  });
+}
+
+function loadApps() {
+  fetch("/apps")
+    .then(res => res.json())
+    .then(data => {
+      const list = document.getElementById("appList");
+      list.innerHTML = "";
+
+      data.forEach(file => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <span>${file}</span>
+          <button class="delete" onclick="deleteApp('${file}')">Delete</button>
+        `;
+        list.appendChild(li);
+      });
+    });
+}
+
+function deleteApp(name) {
+  fetch("/delete/" + name, {
+    method: "DELETE"
+  }).then(() => loadApps());
+}
+
+loadApps();
+</script>
+
+</body>
+</html>
