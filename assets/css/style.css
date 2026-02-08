@@ -1,7 +1,169 @@
-body { background: #0a0a0a; color: white; font-family: sans-serif; display: flex; justify-content: center; padding: 20px; }
-.glass-container { background: #1a1a1a; padding: 30px; border-radius: 20px; width: 100%; max-width: 600px; text-align: center; border: 1px solid #333; }
-textarea { width: 100%; height: 120px; background: #222; border: 1px solid #444; color: white; padding: 10px; border-radius: 10px; margin: 15px 0; font-size: 16px; }
-#generatedCode { height: 300px; font-family: monospace; background: #000; color: #0f0; }
-button { width: 100%; padding: 15px; border-radius: 10px; border: none; background: #6366f1; color: white; font-weight: bold; cursor: pointer; }
-.hidden { display: none; }
-.copy-btn { background: #22c55e; margin-top: 10px; }
+/* 1. बेसिक रिसेट और फोंट्स */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+:root {
+    --bg-dark: #0f172a;       /* डार्क बैकग्राउंड */
+    --accent: #6366f1;        /* इंडिगो कलर */
+    --accent-hover: #4f46e5;
+    --glass: rgba(255, 255, 255, 0.05);
+    --border: rgba(255, 255, 255, 0.1);
+    --text-main: #ffffff;
+    --text-dim: #94a3b8;
+}
+
+/* 2. बॉडी का लुक */
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* 3. मेन कंटेनर (Glassmorphism Effect) */
+.container {
+    width: 100%;
+    max-width: 900px;
+    background: var(--glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    padding: 40px;
+    border-radius: 28px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+/* 4. हेडर सेक्शन */
+.header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    background: linear-gradient(to right, #818cf8, #c084fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.header p {
+    color: var(--text-dim);
+    font-size: 1.1rem;
+}
+
+/* 5. इनपुट एरिया (Textarea) */
+textarea {
+    width: 100%;
+    height: 120px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    color: white;
+    padding: 20px;
+    font-size: 16px;
+    resize: none;
+    box-sizing: border-box;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+textarea:focus {
+    border-color: var(--accent);
+    background: rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+}
+
+/* 6. बटन्स */
+.btn-group {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+button {
+    flex: 1;
+    padding: 15px;
+    border-radius: 14px;
+    border: none;
+    background: var(--accent);
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+button:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.4);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+/* 7. लोडर एनिमेशन */
+.loader {
+    display: none;
+    text-align: center;
+    margin-top: 25px;
+    font-size: 14px;
+    color: #818cf8;
+    letter-spacing: 1px;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+/* 8. रिजल्ट और प्रिव्यू एरिया */
+#output-container {
+    margin-top: 40px;
+    display: none;
+    animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+h3 {
+    margin-bottom: 15px;
+    color: var(--text-dim);
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+iframe {
+    width: 100%;
+    height: 500px;
+    background: #ffffff; /* प्रिव्यू हमेशा वाइट में अच्छा लगता है */
+    border-radius: 16px;
+    border: 4px solid var(--border);
+    margin-top: 10px;
+}
+
+/* कोड कॉपी बटन के लिए अलग स्टाइल */
+.copy-btn {
+    background: #10b981; /* ग्रीन कलर */
+    margin-top: 15px;
+}
+
+.copy-btn:hover {
+    background: #059669;
+    box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.4);
+}
