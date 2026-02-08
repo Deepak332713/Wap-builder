@@ -7,96 +7,7 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     
-    <style>
-        :root {
-            --bg-dark: #0f172a;
-            --accent: #6366f1;
-            --glass: rgba(255, 255, 255, 0.05);
-            --border: rgba(255, 255, 255, 0.1);
-        }
-
-        body {
-            margin: 0;
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-dark);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 900px;
-            background: var(--glass);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border);
-            padding: 30px;
-            border-radius: 24px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-        }
-
-        .header { text-align: center; margin-bottom: 30px; }
-        .header h1 { font-size: 2rem; margin: 0; background: linear-gradient(to right, #818cf8, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-
-        textarea {
-            width: 100%;
-            height: 100px;
-            background: rgba(0,0,0,0.3);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            color: white;
-            padding: 15px;
-            font-size: 16px;
-            resize: none;
-            box-sizing: border-box;
-            outline: none;
-        }
-
-        .btn-group { display: flex; gap: 10px; margin-top: 15px; }
-
-        button {
-            flex: 1;
-            padding: 12px;
-            border-radius: 12px;
-            border: none;
-            background: var(--accent);
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        button:hover { opacity: 0.9; transform: translateY(-2px); }
-
-        /* Preview Area */
-        #output-container {
-            margin-top: 30px;
-            display: none;
-            width: 100%;
-        }
-
-        iframe {
-            width: 100%;
-            height: 400px;
-            background: white;
-            border-radius: 12px;
-            border: none;
-            margin-top: 10px;
-        }
-
-        .loader {
-            display: none;
-            margin-top: 20px;
-            color: #818cf8;
-            font-weight: bold;
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse { 50% { opacity: 0.5; } }
-    </style>
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
 
@@ -117,12 +28,12 @@
         <div id="output-container">
             <h3>Live Preview:</h3>
             <iframe id="preview"></iframe>
-            <button style="margin-top:10px; background:#22c55e;" onclick="copyFullCode()">Code कॉपी करें</button>
+            <button class="copy-btn" onclick="copyFullCode()">Code कॉपी करें</button>
         </div>
     </div>
 
     <script>
-        // यहाँ अपनी असली API Key डालें
+        // ⚠️ यहाँ अपनी असली API Key जरूर डालें, वरना AI काम नहीं करेगा
         const GEMINI_API_KEY = "YOUR_API_KEY_HERE"; 
         let lastGeneratedCode = "";
 
@@ -147,10 +58,15 @@
                 });
 
                 const data = await response.json();
+                
+                if(!data.candidates) {
+                    throw new Error("Invalid API Key or Limit reached");
+                }
+
                 let cleanCode = data.candidates[0].content.parts[0].text;
                 
-                // Markdown सफाई
-                cleanCode = cleanCode.replace(/```html|```/g, "").trim();
+                // Markdown सफाई (AI कभी-कभी ```html लिख कर देता है उसे हटाना जरूरी है)
+                cleanCode = cleanCode.replace(/```html/g, "").replace(/```/g, "").trim();
                 lastGeneratedCode = cleanCode;
 
                 // Preview दिखाना
@@ -161,12 +77,14 @@
                 document.getElementById('output-container').style.display = "block";
 
             } catch (error) {
+                console.error(error);
                 alert("Error! शायद API Key गलत है या इंटरनेट बंद है।");
                 document.getElementById('loader').style.display = "none";
             }
         }
 
         function copyFullCode() {
+            if(!lastGeneratedCode) return;
             navigator.clipboard.writeText(lastGeneratedCode);
             alert("कोड कॉपी हो गया! अब आप इसे नई फाइल में सेव कर सकते हैं।");
         }
