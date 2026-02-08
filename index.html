@@ -3,33 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lovable AI - Predictor</title>
+    <title>AI Code Builder</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-
     <div class="glass-container">
-        <div class="logo">❤️ Lovable AI</div>
-        <h1>Destiny Predictor</h1>
-        <p>AI के जरिए अपनी कंपैटिबिलिटी चेक करें</p>
+        <div class="logo">✨ AI Website Builder</div>
+        <h1>आप क्या बनाना चाहते हैं?</h1>
+        <p>जैसे: "एक होटल वेबसाइट का कोड दो" या "लव कैलकुलेटर बनाओ"</p>
         
-        <div class="input-group">
-            <input type="text" id="name1" placeholder="आपका नाम" autocomplete="off">
-            <input type="text" id="name2" placeholder="उनका नाम" autocomplete="off">
-        </div>
+        <textarea id="userPrompt" placeholder="अपना आईडिया यहाँ लिखें..."></textarea>
 
-        <button id="calcBtn" onclick="startPrediction()">Analyze Connection</button>
+        <button id="buildBtn" onclick="generateWebsite()">Generate Full Code</button>
 
-        <div id="loader" class="hidden">AI गहराई से सोच रहा है...</div>
+        <div id="loader" class="hidden">AI कोड लिख रहा है, कृपया रुकें...</div>
 
         <div id="resultBox" class="hidden">
-            <div id="percentage">0%</div>
-            <p id="aiMessage"></p>
-            <button class="reset-btn" onclick="location.reload()">फिर से चेक करें</button>
+            <h3>आपका कोड तैयार है:</h3>
+            <textarea id="generatedCode" readonly></textarea>
+            <button class="copy-btn" onclick="copyCode()">कोड कॉपी करें</button>
         </div>
     </div>
-
     <script src="assets/js/script.js"></script>
 </body>
 </html>
