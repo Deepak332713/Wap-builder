@@ -3,27 +3,173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Code Builder</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <title>Lovable AI - Full Web Builder</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --accent: #6366f1;
+            --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            padding: 30px;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { font-size: 2rem; margin: 0; background: linear-gradient(to right, #818cf8, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: white;
+            padding: 15px;
+            font-size: 16px;
+            resize: none;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        .btn-group { display: flex; gap: 10px; margin-top: 15px; }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            border: none;
+            background: var(--accent);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        /* Preview Area */
+        #output-container {
+            margin-top: 30px;
+            display: none;
+            width: 100%;
+        }
+
+        iframe {
+            width: 100%;
+            height: 400px;
+            background: white;
+            border-radius: 12px;
+            border: none;
+            margin-top: 10px;
+        }
+
+        .loader {
+            display: none;
+            margin-top: 20px;
+            color: #818cf8;
+            font-weight: bold;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse { 50% { opacity: 0.5; } }
+    </style>
 </head>
 <body>
-    <div class="glass-container">
-        <div class="logo">✨ AI Website Builder</div>
-        <h1>आप क्या बनाना चाहते हैं?</h1>
-        <p>जैसे: "एक होटल वेबसाइट का कोड दो" या "लव कैलकुलेटर बनाओ"</p>
+
+    <div class="container">
+        <div class="header">
+            <h1>✨ Lovable AI Builder</h1>
+            <p>बताइये आप क्या बनाना चाहते हैं?</p>
+        </div>
+
+        <textarea id="prompt" placeholder="उदा. एक होटल बुकिंग वेबसाइट का होमपेज बनाओ जिसमें व्हाट्सएप बटन हो..."></textarea>
         
-        <textarea id="userPrompt" placeholder="अपना आईडिया यहाँ लिखें..."></textarea>
+        <div class="btn-group">
+            <button onclick="generateCode()">Create Website</button>
+        </div>
 
-        <button id="buildBtn" onclick="generateWebsite()">Generate Full Code</button>
+        <div id="loader" class="loader">AI आपके लिए कोडिंग कर रहा है...</div>
 
-        <div id="loader" class="hidden">AI कोड लिख रहा है, कृपया रुकें...</div>
-
-        <div id="resultBox" class="hidden">
-            <h3>आपका कोड तैयार है:</h3>
-            <textarea id="generatedCode" readonly></textarea>
-            <button class="copy-btn" onclick="copyCode()">कोड कॉपी करें</button>
+        <div id="output-container">
+            <h3>Live Preview:</h3>
+            <iframe id="preview"></iframe>
+            <button style="margin-top:10px; background:#22c55e;" onclick="copyFullCode()">Code कॉपी करें</button>
         </div>
     </div>
-    <script src="assets/js/script.js"></script>
+
+    <script>
+        // यहाँ अपनी असली API Key डालें
+        const GEMINI_API_KEY = "YOUR_API_KEY_HERE"; 
+        let lastGeneratedCode = "";
+
+        async function generateCode() {
+            const promptValue = document.getElementById('prompt').value;
+            if (!promptValue) return alert("कुछ तो लिखो भाई!");
+
+            document.getElementById('loader').style.display = "block";
+            document.getElementById('output-container').style.display = "none";
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ 
+                            parts: [{ 
+                                text: `Generate a complete, modern, single-file HTML website for: ${promptValue}. Include CSS and JS inside the file. Give only the raw HTML code, no talk.` 
+                            }] 
+                        }]
+                    })
+                });
+
+                const data = await response.json();
+                let cleanCode = data.candidates[0].content.parts[0].text;
+                
+                // Markdown सफाई
+                cleanCode = cleanCode.replace(/```html|```/g, "").trim();
+                lastGeneratedCode = cleanCode;
+
+                // Preview दिखाना
+                const iframe = document.getElementById('preview');
+                iframe.srcdoc = cleanCode;
+
+                document.getElementById('loader').style.display = "none";
+                document.getElementById('output-container').style.display = "block";
+
+            } catch (error) {
+                alert("Error! शायद API Key गलत है या इंटरनेट बंद है।");
+                document.getElementById('loader').style.display = "none";
+            }
+        }
+
+        function copyFullCode() {
+            navigator.clipboard.writeText(lastGeneratedCode);
+            alert("कोड कॉपी हो गया! अब आप इसे नई फाइल में सेव कर सकते हैं।");
+        }
+    </script>
 </body>
 </html>
