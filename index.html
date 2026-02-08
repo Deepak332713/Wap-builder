@@ -8,6 +8,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="assets/css/style.css">
+    
+    <link rel="stylesheet" href="assets/css/animations.css">
 </head>
 <body>
 
@@ -33,7 +35,7 @@
     </div>
 
     <script>
-        // ⚠️ यहाँ अपनी असली API Key जरूर डालें, वरना AI काम नहीं करेगा
+        // ⚠️ यहाँ अपनी असली API Key जरूर डालें
         const GEMINI_API_KEY = "YOUR_API_KEY_HERE"; 
         let lastGeneratedCode = "";
 
@@ -65,7 +67,7 @@
 
                 let cleanCode = data.candidates[0].content.parts[0].text;
                 
-                // Markdown सफाई (AI कभी-कभी ```html लिख कर देता है उसे हटाना जरूरी है)
+                // Markdown सफाई
                 cleanCode = cleanCode.replace(/```html/g, "").replace(/```/g, "").trim();
                 lastGeneratedCode = cleanCode;
 
